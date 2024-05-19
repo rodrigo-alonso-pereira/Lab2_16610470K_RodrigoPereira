@@ -15,3 +15,12 @@ Req 3: TDA section - constructor.
 */
 section(Point1, Point2, Distance, Cost, [Point1, Point2, Distance, Cost]).
 
+
+/*
+Req 4: TDA line - constructor.
+ 
+- Descripcion = Predicado que permite crear una línea .
+- MP: station(Point1, Point2, Distance, Cost, Section, [Point1, Point2, Distance, Cost, Section]).
+*/
+line(Id, Name, RailType, Sections, [Id, Name, RailType, Sections]).
+
