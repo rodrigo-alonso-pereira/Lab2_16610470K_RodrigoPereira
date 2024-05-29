@@ -55,6 +55,11 @@ Req 5: TDA line - Otros predicados.
                 la distancia (en la unidad de medida expresada en cada tramo) y su costo.
 - MP: lineLength/4.
 - MS: line_get_sections/2,
+	  (ListSections = [] ->  
+    	Length = 0,
+        Distance = 0,
+        Cost = 0
+      ;
       sum_element_list/3,
 	  sum_element_list/3,
       new_name_station_list/2,
@@ -120,13 +125,17 @@ delete_duplicates([Head|Tail], [Head|NewList]) :-
     not(belongs(Head, Tail)),
     delete_duplicates(Tail, NewList).
 
-%lineLength(L1, LENGTH, DISTANCE, COST) :-
-lineLength(L1, LENGTH, DISTANCE, COST) :-
-    line_get_sections(L1, ListSections),
-    sum_element_list(ListSections, DISTANCE, section_get_distance),
-	sum_element_list(ListSections, COST, section_get_cost),
-    new_name_station_list(ListSections, ListStation),
-    delete_duplicates(ListStation, ListStationClean),
-    length_list(ListStationClean, LENGTH).
+lineLength(Line, Length, Distance, Cost) :-
+    line_get_sections(Line, ListSections),
+    (ListSections = [] ->  
+    	Length = 0,
+        Distance = 0,
+        Cost = 0
+    ;
+    	sum_element_list(ListSections, Distance, section_get_distance),
+    	sum_element_list(ListSections, Cost, section_get_cost),
+    	new_name_station_list(ListSections, ListStation),
+    	delete_duplicates(ListStation, ListStationClean),
+    	length_list(ListStationClean, Length)).
     
 
