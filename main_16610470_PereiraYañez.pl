@@ -139,3 +139,57 @@ lineLength(Line, Length, Distance, Cost) :-
     	length_list(ListStationClean, Length)).
     
 
+/*
+Req 6: TDA line - otras funciones.
+ 
+- Descripcion = Predicado que permite determinar el trayecto entre una estación origen y una final, 
+                la distancia de ese trayecto y el costo.
+- MP: lineLength/6.
+- MS: section_get_point1/2,
+    section_get_point2/2,
+    station_get_name/2,
+    station_get_name/2,
+    ((Name1 == StationStart ; Flag == 'True') ->  
+    	NewFlag = 'True',
+        append([Section], Acc, FilterSectionList),
+        ((Name1 == StationEnd ; Name2 == StationEnd) ->  
+        	filter_section_list/5
+        ;
+        	filter_section_list/5)
+    ;
+    	filter_section_list/5).
+*/
+
+% Filtrar lista de secciones
+filter_section_list([], _, _, _, []).
+
+filter_section_list([Section|Tail], StationStart, StationEnd, Flag, FilterSectionList) :-
+    section_get_point1(Section, Station1),
+    section_get_point2(Section, Station2),
+    station_get_name(Station1, Name1),
+    station_get_name(Station2, Name2),
+    ((Name1 == StationStart ; Flag == 'True') ->  
+    	NewFlag = 'True',
+        append([Section], Acc, FilterSectionList),
+        ((Name1 == StationEnd ; Name2 == StationEnd) ->  
+        	filter_section_list(Tail, StationStart, StationEnd, 'False', Acc)
+        ;
+        	filter_section_list(Tail, StationStart, StationEnd, NewFlag, Acc))
+    ;
+    	filter_section_list(Tail, StationStart, StationEnd, Flag, FilterSectionList)).
+    
+lineSectionLength(Line, StationStart, StationEnd, Sections, Distance, Cost) :-
+    line_get_sections(Line, SectionList),
+    filter_section_list(SectionList, StationStart, StationEnd, 'False', Sections),
+    sum_element_list(Sections, Distance, section_get_distance),
+    sum_element_list(Sections, Cost, section_get_cost).
+
+
+
+
+
+
+
+
+
+
