@@ -54,7 +54,10 @@ line( 1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S5, S6_C, S7, S8], L1),
 lineLength(L1, LENGTH, DISTANCE, COST),
 
 % determinar trayecto entre estaciones, junto con su distancia y costo.
-lineSectionLength(L1, "USACH", "Los Héroes", SECCIONES, DISTANCIA, COSTO).
+lineSectionLength(L1, "USACH", "Los Héroes", SECCIONES, DISTANCIA, COSTO),
+
+% añadir tramo a una linea
+lineAddSection(L0, S0, L0_1).
 
 
 */ 
