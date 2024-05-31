@@ -43,6 +43,18 @@ Req 4: TDA line - constructor.
 */
 line(Id, Name, RailType, Sections, [Id, Name, RailType, Sections]).
 
+% Obtiene el id de una linea
+line_get_id(Line, Id) :-
+    line(Id, _, _, _, Line).
+
+% Obtiene el name de una linea
+line_get_name(Line, Name) :-
+    line(_, Name, _, _, Line).
+
+% Obtiene el name de una linea
+line_get_railType(Line, RailType) :-
+    line(_, _, RailType, _, Line).
+
 % Obtiene lista de secciones de una linea
 line_get_sections(Line, Sections) :-
     line(_, _, _, Sections, Line).
@@ -84,9 +96,6 @@ get_element_list([], _).
 get_element_list([First|Tail], Predicate) :-
     call(Predicate, First),
     get_element_list(Tail, Predicate).
-
-% Agregar elemento al final.
-add_end(List, Element [List|Element]).
 
 % Suma los elementos de una lista de TDAs
 sum_element_list([], 0, _).
@@ -185,7 +194,31 @@ lineSectionLength(Line, StationStart, StationEnd, Sections, Distance, Cost) :-
     sum_element_list(Sections, Cost, section_get_cost).
 
 
+/*
+Req 7: TDA line - modificador..
+ 
+- Descripcion = Predicado que permite añadir tramos a una línea.
+- MP: lineAddSection/3.
+- MS: line_get_sections/2,
+      not(belongs/2),
+      line_get_id/2,
+      line_get_name/2,
+      line_get_railType/2,
+      append(SectionList, [Section], NewSectionList),
+      line/5.
+*/
 
+lineAddSection(Line, Section, NewLine) :-
+    line_get_sections(Line, SectionList),
+    not(belongs(Section, SectionList)),
+    line_get_id(Line, Id),
+    line_get_name(Line, Name),
+    line_get_railType(Line, RailType),
+    append(SectionList, [Section], NewSectionList),
+    line(Id, Name, RailType, NewSectionList, NewLine).
+   
+    
+    
 
 
 
