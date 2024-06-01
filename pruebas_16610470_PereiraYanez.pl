@@ -32,12 +32,10 @@ station( 2, "Estación Central", C, 45, ST2),
 station( 3, "ULA", R, 45, ST3),
 station( 4, "República", R, 45, ST4),
 station( 5, "Los Héroes", C, 60, ST5),
-station( 6, "Toesca", R, 40, ST6),
-station( 7, "La Moneda", R, 40, ST7),
-station( 8, "Cochera", M, 3600, ST8),
-station( 9, "Parque OHiggins", R, 30, ST9),
-station( 10, "San Pablo", T, 40, ST10),
-station( 11, "Los Dominicos", T, 60, ST11),
+station( 6, "La Moneda", R, 40, ST6),
+station( 7, "U. de Chile", C, 40, ST7),
+station( 8, "Santa Lucia", T, 45, ST8),
+station( 9, "Cochera", M, 3600, ST9),
 
 % creando una nueva sección
 section( ST0, ST1, 2, 50, S0),
@@ -45,14 +43,13 @@ section( ST1, ST2, 2.5, 55, S1),
 section( ST2, ST3, 1.5, 30, S2),
 section( ST3, ST4, 3, 45, S3),
 section( ST4, ST5, 3, 45, S4),
-section( ST4, ST6, 1.4, 50, S5),
-section( ST5, ST8, 2,  40, S6_C),
-section( ST0, ST10, 3,  200, S7),
-section( ST7, ST11, 7, 200, S8),
+section( ST5, ST6, 1.4, 50, S5),
+section( ST6, ST7, 2,  40, S6),
+section( ST7, ST8, 3,  200, S7),
 
 % creando lineas
 line( 0, "Línea 0", "UIC 60 ASCE", [ ], L0),
-line( 1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S5, S6_C, S7, S8], L1),
+line( 1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S7], L1),
 
 % calculando largo, distancia y costo
 lineLength(L1, LENGTH, DISTANCE, COST),
@@ -61,7 +58,9 @@ lineLength(L1, LENGTH, DISTANCE, COST),
 lineSectionLength(L1, "USACH", "Los Héroes", SECCIONES, DISTANCIA, COSTO),
 
 % añadir tramo a una linea
-lineAddSection(L0, S0, L0_1).
+lineAddSection(L0, S0, L0_1),
+
+isLine(L1, StationList).
 
 
 */ 
