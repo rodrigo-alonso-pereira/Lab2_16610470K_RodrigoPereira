@@ -230,8 +230,30 @@ Req 8: TDA line - modificador..
 - MP: isLine/1.
 - MS: 
 */    
+
+% Crear sublista con estaciones de una linea
+new_station_list([], 0, []).
+
+new_station_list([Head|Tail], Length, NewStationList) :-
+    section_get_point1(Head, Station1),
+    section_get_point2(Head, Station2),
+    new_station_list(Tail, AccCount, Acc),
+    (Count == Length ->  
+    	Count is AccCount + 1,
+    	append([Station1, Station2], AccCount, NewStationList)
+    ;   
+    	Count is AccCount + 1,
+    	append([Station1], AccCount, NewStationList)).
+
+% verificar id y nombre unico de estaciones
+% verificar si estaciones estan conectadas
+% verificar si la ultima y primera estacion son terminales
+% verificar que las estaciones tengan secciones
+isLine(Line, StationList) :-
+    line_get_sections(Line, SectionList),
+    length_list(SectionList, LengthSectionList),
+    new_station_list(SectionList, LengthSectionList, StationList).
     
-%isLine(Line) :-
     
 
 
