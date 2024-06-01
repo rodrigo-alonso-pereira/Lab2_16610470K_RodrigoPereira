@@ -1,3 +1,6 @@
+% Constructor Type
+type(Name, [Name]).
+
 /*
 Req 2: TDA station - constructor
 
@@ -195,7 +198,7 @@ lineSectionLength(Line, StationStart, StationEnd, Sections, Distance, Cost) :-
 
 
 /*
-Req 7: TDA line - modificador..
+Req 7: TDA line - modificador.
  
 - Descripcion = Predicado que permite añadir tramos a una línea.
 - MP: lineAddSection/3.
@@ -217,9 +220,19 @@ lineAddSection(Line, Section, NewLine) :-
     append(SectionList, [Section], NewSectionList),
     line(Id, Name, RailType, NewSectionList, NewLine).
    
-    
-    
 
+/*
+Req 8: TDA line - modificador..
+ 
+- Descripcion = redicado que permite determinar si un elemento cumple con las restricciones 
+                señaladas en apartados anteriores en relación a las estaciones y tramos para 
+                poder conformar una línea.
+- MP: isLine/1.
+- MS: 
+*/    
+    
+%isLine(Line) :-
+    
 
 
 
