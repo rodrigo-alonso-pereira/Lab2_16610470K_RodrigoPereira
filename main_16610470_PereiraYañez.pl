@@ -1,6 +1,9 @@
 % Constructor Type
 type(Name, [Name]).
 
+type_get_name(Type, Name) :-
+    type(Name,Type).
+
 /*
 Req 2: TDA station - constructor
 
@@ -9,8 +12,14 @@ Req 2: TDA station - constructor
 */
 station(Id, Name, Type, StopTime, [Id, Name, Type, StopTime]).
 
+station_get_id(Station, Id) :-
+    station(Id, _, _, _, Station).
+
 station_get_name(Station, Name) :-
     station(_, Name, _, _, Station).
+
+station_get_type(Station, Type) :-
+    station(_, _, Type, _, Station).
 
 
 /*
@@ -93,13 +102,6 @@ belongs(Element, [Element|_]).
 belongs(Element, [_|Tail]) :-
     belongs(Element, Tail).
 
-% Recorre lista y obtiene elemento
-get_element_list([], _).
-
-get_element_list([First|Tail], Predicate) :-
-    call(Predicate, First),
-    get_element_list(Tail, Predicate).
-
 % Suma los elementos de una lista de TDAs
 sum_element_list([], 0, _).
 
@@ -126,7 +128,7 @@ new_name_station_list([Head|Tail], NewList) :-
     new_name_station_list(Tail, Acc),
     append([Name1, Name2], Acc, NewList).
 
-% Remover duplicados
+% Remover duplicados de una lista
 delete_duplicates([], []).
 
 delete_duplicates([Head|Tail], NewList) :-
@@ -172,7 +174,7 @@ Req 6: TDA line - otras funciones.
     	filter_section_list/5).
 */
 
-% Filtrar lista de secciones
+% Filtrar lista de secciones segun estacion de inicio y fin
 filter_section_list([], _, _, _, []).
 
 filter_section_list([Section|Tail], StationStart, StationEnd, Flag, FilterSectionList) :-
@@ -213,7 +215,7 @@ Req 7: TDA line - modificador.
 
 lineAddSection(Line, Section, NewLine) :-
     line_get_sections(Line, SectionList),
-    not(belongs(Section, SectionList)),
+    not(belongs(Section, SectionList)), %Verifica que seccion no este duplicada
     line_get_id(Line, Id),
     line_get_name(Line, Name),
     line_get_railType(Line, RailType),
@@ -231,28 +233,84 @@ Req 8: TDA line - modificador..
 - MS: 
 */    
 
-% Crear sublista con estaciones de una linea
-new_station_list([], 0, []).
+% Crear sublista con estaciones iniciales de cada seccion de una linea
+partial_station_list([], []).
 
-new_station_list([Head|Tail], Length, NewStationList) :-
-    section_get_point1(Head, Station1),
-    section_get_point2(Head, Station2),
-    new_station_list(Tail, AccCount, Acc),
-    (Count == Length ->  
-    	Count is AccCount + 1,
-    	append([Station1, Station2], AccCount, NewStationList)
-    ;   
-    	Count is AccCount + 1,
-    	append([Station1], AccCount, NewStationList)).
+partial_station_list([Section|Tail], NewStationList) :-
+    section_get_point1(Section, Station1),
+    partial_station_list(Tail, AccList),
+    append([Station1], AccList, NewStationList).
+
+% Recorre lista de TDA's y obtiene elemento en particular
+get_element_from_list_tda([], _, []).
+
+get_element_from_list_tda([First|Tail], Predicate, ListElement) :-
+    call(Predicate, First, Id),
+    get_element_from_list_tda(Tail, Predicate, AccList),
+    append([Id], AccList, ListElement).
+
+% Recorre lista verificando si elemento esta repetido en lista
+evaluate_repeated_element([First|Tail]) :-
+    belongs(First, Tail).
+evaluate_repeated_element([_|Tail]) :-
+    evaluate_repeated_element(Tail).
+
+% Evalua si station cumple con sus condiciones
+is_station(StationList) :-
+    get_element_from_list_tda(StationList, station_get_id, IdList),
+    get_element_from_list_tda(StationList, station_get_name, NameList),
+    not(evaluate_repeated_element(IdList)),
+    not(evaluate_repeated_element(NameList)).
+
+% Entrega primer elemento de lista
+first([First|_], First).
+
+% Evalua si primera y ultima estacion son terminal
+is_terminal(StationList) :-
+    first(StationList, Station1),
+    station_get_type(Station1, Type1),
+    type_get_name(Type1, NameType1),
+    last(StationList, Station2),
+    station_get_type(Station2, Type2),
+    type_get_name(Type2, NameType2),
+    NameType1 == "Terminal",
+    NameType2 == "Terminal".
+
+% Evalua si linea esta vacia
+is_empty_line(SectionList) :-
+    not(SectionList == []).
+
+% Crear sublista con estaciones iniciales y finales de cada seccion de una linea
+full_station_list([], []).
+
+full_station_list([Section|Tail], NewStationList) :-
+    section_get_point1(Section, Station1),
+    section_get_point2(Section, Station2),
+    full_station_list(Tail, AccList),
+    append([Station1, Station2], AccList, NewStationList).
+
+% Evalua si las secciones se comunican
+is_section_communicates(SectionList) :-
+    full_station_list(SectionList, StationList),
+    print_element(StationList).
 
 % verificar id y nombre unico de estaciones
 % verificar si estaciones estan conectadas
 % verificar si la ultima y primera estacion son terminales
 % verificar que las estaciones tengan secciones
-isLine(Line, StationList) :-
+% encapsular is_station, is_section
+isLine(Line) :-
     line_get_sections(Line, SectionList),
-    length_list(SectionList, LengthSectionList),
-    new_station_list(SectionList, LengthSectionList, StationList).
+    is_empty_line(SectionList),
+    partial_station_list(SectionList, ParcialStationList),
+    last(SectionList, LastSection),
+    section_get_point2(LastSection, LastStation),
+    append(ParcialStationList, [LastStation], StationList),
+    is_station(StationList),
+    is_terminal(StationList),
+    is_section_communicates(SectionList).
+    
+    
     
     
 
