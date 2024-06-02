@@ -67,9 +67,26 @@ lineSectionLength(L1, "USACH", "Los Héroes", SECCIONES, DISTANCIA, COSTO),
 lineAddSection(L0, S0, L0_1),
 
 % evaluando linea
-%isLine(L1). %true
+%isLine(L0_1). %false por que no tiene estacion terminal
 %isLine(L0). %false
-isLine(L0_1). %false por que no tiene estacion terminal
+isLine(L1), %true
+
+% creando carType's
+car_type("Central", CT),
+car_type("Terminal", TR),
+
+% creando carros de pasajeros.
+pcar(0, 90, "NS-74", CT, PC0),
+pcar(1, 100, "NS-74", TR, PC1),
+pcar(2, 150, "NS-74", TR, PC2),
+pcar(3, 90, "NS-74", CT, PC3),
+pcar(4, 100, "AS-2014", CT, PC4),
+pcar(5, 100, "AS-2014", CT, PC5),
+pcar(6, 100, "AS-2016", CT, PC6),
+
+% creando train
+train(0, "CAF", "UIC 60 ASCE", 60, [ ], T0),
+train(1, "CAF", "UIC 60 ASCE", 70, [PC1, PC0, PC3, PC2], T1).
 
 
 */ 
