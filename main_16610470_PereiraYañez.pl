@@ -402,9 +402,17 @@ add_element_list([First|Tail], Element, Position, [First|NewTail]) :-
 /*
 Req 11: TDA train - Modificador.
  
-- Descripcion = Función que permite añadir carros a un tren en una posición dada.
+- Descripcion = Predicado que permite añadir carros a un tren en una posición dada.
 
-- MP: train/6.
+- MP: trainAddCar/4.
+- MS: train_get_id/2,
+      train_get_maker/2,
+      train_get_rail_type/2,
+      train_get_speed/2,
+      train_get_pcars/2,
+      not(belongs/2),
+      add_element_list/4,
+      train/6.
 */   
 
 trainAddCar(Train, Pcar, Position, NewTrain) :-
@@ -416,8 +424,38 @@ trainAddCar(Train, Pcar, Position, NewTrain) :-
     not(belongs(Pcar, PcarList)),
     add_element_list(PcarList, Pcar, Position, NewPcarList),
     train(Id, Maker, RailType, Speed, NewPcarList, NewTrain).
-    
+%-----------------------------------------------------------------------------------------------
 
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar.
+
+% Permite eliminar un elemento de una lista en una posicion dada
+remove_element_list([], 0, []).
+
+remove_element_list([_|Tail], 0, Tail).
+
+remove_element_list([First|Tail], Position, [First|NewTail]) :-
+    Position > 0,
+    NewPosition is Position - 1,
+    remove_element_list(Tail, NewPosition, NewTail).
+
+/*
+Req 12: TDA train - Modificador.
+ 
+- Descripcion =  Predicado que permite eliminar un carro desde el convoy.
+
+- MP: trainRemoveCar/3.
+- MS: 
+*/   
+
+trainRemoveCar(Train, Position, NewTrain) :-
+    train_get_id(Train, Id),
+    train_get_maker(Train, Maker),
+    train_get_rail_type(Train, RailType),
+    train_get_speed(Train, Speed),
+    train_get_pcars(Train, PcarList),
+    remove_element_list(PcarList, Position, NewPcarList),
+    train(Id, Maker, RailType, Speed, NewPcarList, NewTrain).
+    
 
 
 
