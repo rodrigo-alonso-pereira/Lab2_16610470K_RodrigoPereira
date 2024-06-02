@@ -1,4 +1,5 @@
 % Constructor Type
+% TODO: Cambiar nombre por stationType
 type(Name, [Name]).
 
 type_get_name(Type, Name) :-
@@ -12,12 +13,15 @@ Req 2: TDA station - constructor
 */
 station(Id, Name, Type, StopTime, [Id, Name, Type, StopTime]).
 
+% Obtiene id de Station
 station_get_id(Station, Id) :-
     station(Id, _, _, _, Station).
 
+% Obtiene name de Station
 station_get_name(Station, Name) :-
     station(_, Name, _, _, Station).
 
+% Obtiene type de Station
 station_get_type(Station, Type) :-
     station(_, _, Type, _, Station).
 
@@ -224,7 +228,7 @@ lineAddSection(Line, Section, NewLine) :-
    
 
 /*
-Req 8: TDA line - modificador..
+Req 8: TDA line - modificador.
  
 - Descripcion = Predicado que permite determinar si un elemento cumple con las restricciones 
                 señaladas en apartados anteriores en relación a las estaciones y tramos para 
@@ -319,10 +323,23 @@ isLine(Line) :-
     is_terminal(StationList),
     is_section_communicates(SectionList).
     
-    
-    
-    
+% Constructor de carType
+car_type(Name, [Name]).
 
+car_type_get_name(carType, Name) :-
+    type(Name,carType).
+
+/*
+Req 9: TDA pcar - Constructor.
+ 
+- Descripcion = Permite crear los carros de pasajeros que conforman un convoy. Los carros 
+                pueden ser de tipo terminal (tr) o central (ct).
+
+- MP: pcar/5.
+- MS: .
+*/      
+
+pcar(Id, Capacity, Model, Type, [Id, Capacity, Model, Type]).
 
 
 
