@@ -88,11 +88,15 @@ pcar(6, 100, "AS-2016", CT, PC6),
 train(0, "CAF", "UIC 60 ASCE", 60, [ ], T0),
 train(1, "CAF", "UIC 60 ASCE", 70, [PC1, PC0, PC3, PC2], T1),
 
-% agregando pcar a train
+% agregando pcar a train (indice empieza en 0)
 trainAddCar(T0, PC1, 0, T2),
 trainAddCar(T2, PC0, 1, T3),
 trainAddCar(T3, PC3, 2, T4),
 trainAddCar(T4, PC2, 3, T5), %T5 es identico a T1
+
+% eliminando pcar a train (indice empieza en 0)
+trainRemoveCar(T4, 2, T4_2), %T4_2 es indentico a T3
+trainRemoveCar(T4, 1, T4_3).
 
 
 */ 
