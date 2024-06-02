@@ -226,11 +226,19 @@ lineAddSection(Line, Section, NewLine) :-
 /*
 Req 8: TDA line - modificador..
  
-- Descripcion = redicado que permite determinar si un elemento cumple con las restricciones 
+- Descripcion = Predicado que permite determinar si un elemento cumple con las restricciones 
                 señaladas en apartados anteriores en relación a las estaciones y tramos para 
                 poder conformar una línea.
 - MP: isLine/1.
-- MS: 
+- MS: line_get_sections/2,
+      is_empty_line/1,
+      partial_station_list/2,
+      last/2,
+      section_get_point2/2,
+      append(ParcialStationList, [LastStation], StationList),
+      is_station/1,
+      is_terminal/1,
+      is_section_communicates/1.
 */    
 
 % Crear sublista con estaciones iniciales de cada seccion de una linea
@@ -289,16 +297,17 @@ full_station_list([Section|Tail], NewStationList) :-
     full_station_list(Tail, AccList),
     append([Station1, Station2], AccList, NewStationList).
 
+% Evalua si las secciones estan conectadas
+check_pair_station([_, _]).
+
+check_pair_station([_, X, X | Tail]) :-
+    check_pair_station([X|Tail]).
+
 % Evalua si las secciones se comunican
 is_section_communicates(SectionList) :-
     full_station_list(SectionList, StationList),
-    print_element(StationList).
+    check_pair_station(StationList).
 
-% verificar id y nombre unico de estaciones
-% verificar si estaciones estan conectadas
-% verificar si la ultima y primera estacion son terminales
-% verificar que las estaciones tengan secciones
-% encapsular is_station, is_section
 isLine(Line) :-
     line_get_sections(Line, SectionList),
     is_empty_line(SectionList),
