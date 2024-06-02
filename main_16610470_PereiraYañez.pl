@@ -336,10 +336,28 @@ Req 9: TDA pcar - Constructor.
                 pueden ser de tipo terminal (tr) o central (ct).
 
 - MP: pcar/5.
-- MS: .
 */      
 
 pcar(Id, Capacity, Model, Type, [Id, Capacity, Model, Type]).
+
+
+/*
+Req 10: TDA train - Constructor.
+ 
+- Descripcion = Predicado que permite crear un tren o convoy.
+
+- MP: train/6.
+*/   
+
+train(Id, Maker, RailType, Speed, Pcars, [Id, Maker, RailType, Speed, Pcars]).
+
+
+
+
+
+
+
+
 
 
 
