@@ -96,7 +96,11 @@ trainAddCar(T4, PC2, 3, T5), %T5 es identico a T1
 
 % eliminando pcar a train (indice empieza en 0)
 trainRemoveCar(T4, 2, T4_2), %T4_2 es indentico a T3
-trainRemoveCar(T4, 1, T4_3).
+trainRemoveCar(T4, 1, T4_3),
+
+% evaluando si es tren
+isTrain(T4). %False pq no termina en terminal.
+isTrain(T5).
 
 
 */ 
