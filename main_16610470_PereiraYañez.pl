@@ -5,6 +5,8 @@ type(Name, [Name]).
 type_get_name(Type, Name) :-
     type(Name,Type).
 
+
+%-----------------------------------------------------------------------------------------------
 /*
 Req 2: TDA station - constructor
 
@@ -26,6 +28,7 @@ station_get_type(Station, Type) :-
     station(_, _, Type, _, Station).
 
 
+%-----------------------------------------------------------------------------------------------
 /*
 Req 3: TDA section - constructor.
  
@@ -51,6 +54,7 @@ section_get_cost(Section, Cost) :-
     section(_, _, _, Cost, Section).
 
 
+%-----------------------------------------------------------------------------------------------
 /*
 Req 4: TDA line - constructor.
  
@@ -76,11 +80,13 @@ line_get_sections(Line, Sections) :-
     line(_, _, _, Sections, Line).
 
 
+%-----------------------------------------------------------------------------------------------
 /*
 Req 5: TDA line - Otros predicados.
  
-- Descripcion = Predicado que permite determinar el largo total de una línea (cantidad de estaciones), 
-                la distancia (en la unidad de medida expresada en cada tramo) y su costo.
+- Descripcion = Predicado que permite determinar el largo total de una línea 
+                (cantidad de estaciones), la distancia (en la unidad de medida expresada 
+                en cada tramo) y su costo.
 - MP: lineLength/4.
 - MS: line_get_sections/2,
 	  (ListSections = [] ->  
@@ -157,11 +163,12 @@ lineLength(Line, Length, Distance, Cost) :-
     	length_list(ListStationClean, Length)).
     
 
+%-----------------------------------------------------------------------------------------------
 /*
 Req 6: TDA line - otras funciones.
  
-- Descripcion = Predicado que permite determinar el trayecto entre una estación origen y una final, 
-                la distancia de ese trayecto y el costo.
+- Descripcion = Predicado que permite determinar el trayecto entre una estación origen y 
+                una final, la distancia de ese trayecto y el costo.
 - MP: lineLength/6.
 - MS: section_get_point1/2,
     section_get_point2/2,
@@ -203,6 +210,7 @@ lineSectionLength(Line, StationStart, StationEnd, Sections, Distance, Cost) :-
     sum_element_list(Sections, Cost, section_get_cost).
 
 
+%-----------------------------------------------------------------------------------------------
 /*
 Req 7: TDA line - modificador.
  
@@ -225,8 +233,9 @@ lineAddSection(Line, Section, NewLine) :-
     line_get_railType(Line, RailType),
     append(SectionList, [Section], NewSectionList),
     line(Id, Name, RailType, NewSectionList, NewLine).
-   
 
+
+%-----------------------------------------------------------------------------------------------
 /*
 Req 8: TDA line - modificador.
  
@@ -329,6 +338,8 @@ car_type(Name, [Name]).
 car_type_get_name(carType, Name) :-
     type(Name,carType).
 
+
+%-----------------------------------------------------------------------------------------------
 /*
 Req 9: TDA pcar - Constructor.
  
@@ -341,6 +352,7 @@ Req 9: TDA pcar - Constructor.
 pcar(Id, Capacity, Model, Type, [Id, Capacity, Model, Type]).
 
 
+%-----------------------------------------------------------------------------------------------
 /*
 Req 10: TDA train - Constructor.
  
@@ -351,10 +363,60 @@ Req 10: TDA train - Constructor.
 
 train(Id, Maker, RailType, Speed, Pcars, [Id, Maker, RailType, Speed, Pcars]).
 
+% GET DE TDA train
+
+% Obtiene Id de train
+train_get_id(Train, Id) :-
+    train(Id, _, _, _, _, Train).
+
+% Obtiene Maker de train
+train_get_maker(Train, Maker) :-
+    train(_, Maker, _, _, _, Train).
+
+% Obtiene RailType de train
+train_get_rail_type(Train, RailType) :-
+    train(_, _, RailType, _, _, Train).
+
+% Obtiene Speed de train
+train_get_speed(Train, Speed) :-
+    train(_, _, _, Speed, _, Train).
+
+% Obtiene Pcars de train
+train_get_pcars(Train, Pcars) :-
+    train(_, _, _, _, Pcars, Train).
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainAddCar.
+
+% Permite agregar un elemento en una lista con posicion dada
+add_element_list([], Element, 0, [Element]).
+
+add_element_list(List, Element, 0, [Element|List]).
+
+add_element_list([First|Tail], Element, Position, [First|NewTail]) :-
+    Position > 0,
+    NewPosition is Position - 1,
+    add_element_list(Tail, Element, NewPosition, NewTail).
 
 
+/*
+Req 11: TDA train - Modificador.
+ 
+- Descripcion = Función que permite añadir carros a un tren en una posición dada.
 
+- MP: train/6.
+*/   
 
+trainAddCar(Train, Pcar, Position, NewTrain) :-
+    train_get_id(Train, Id),
+    train_get_maker(Train, Maker),
+    train_get_rail_type(Train, RailType),
+    train_get_speed(Train, Speed),
+    train_get_pcars(Train, PcarList),
+    not(belongs(Pcar, PcarList)),
+    add_element_list(PcarList, Pcar, Position, NewPcarList),
+    train(Id, Maker, RailType, Speed, NewPcarList, NewTrain).
+    
 
 
 
