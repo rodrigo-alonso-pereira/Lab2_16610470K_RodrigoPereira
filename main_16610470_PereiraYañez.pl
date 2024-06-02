@@ -384,6 +384,7 @@ train_get_speed(Train, Speed) :-
 % Obtiene Pcars de train
 train_get_pcars(Train, Pcars) :-
     train(_, _, _, _, Pcars, Train).
+
 %-----------------------------------------------------------------------------------------------
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainAddCar.
@@ -424,6 +425,7 @@ trainAddCar(Train, Pcar, Position, NewTrain) :-
     not(belongs(Pcar, PcarList)),
     add_element_list(PcarList, Pcar, Position, NewPcarList),
     train(Id, Maker, RailType, Speed, NewPcarList, NewTrain).
+
 %-----------------------------------------------------------------------------------------------
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar.
@@ -444,7 +446,13 @@ Req 12: TDA train - Modificador.
 - Descripcion =  Predicado que permite eliminar un carro desde el convoy.
 
 - MP: trainRemoveCar/3.
-- MS: 
+- MS: train_get_id/2,
+      train_get_maker/2,
+      train_get_rail_type/2,
+      train_get_speed/2,
+      train_get_pcars/2,
+      remove_element_list/3,
+      train/6.
 */   
 
 trainRemoveCar(Train, Position, NewTrain) :-
@@ -455,10 +463,22 @@ trainRemoveCar(Train, Position, NewTrain) :-
     train_get_pcars(Train, PcarList),
     remove_element_list(PcarList, Position, NewPcarList),
     train(Id, Maker, RailType, Speed, NewPcarList, NewTrain).
+
+ %-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar.   
+
+/*
+Req 13: TDA train - Pertenencia.
+ 
+- Descripcion =  Predicado que permite determinar si un elemento es un tren válido.
+
+- MP: isTrain/1.
+- MS: 
+*/  
+
+isTrain(Train) :-
     
-
-
-
 
 
 
