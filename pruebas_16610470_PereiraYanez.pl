@@ -46,10 +46,16 @@ section( ST4, ST5, 3, 45, S4),
 section( ST5, ST6, 1.4, 50, S5),
 section( ST6, ST7, 2,  40, S6),
 section( ST7, ST8, 3,  200, S7),
+section( ST8, ST9, 3,  200, S8), %Seccion que Incluye cochera
+section( ST6, ST8, 3,  200, S9), 
 
 % creando lineas
 line( 0, "Línea 0", "UIC 60 ASCE", [ ], L0),
 line( 1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S7], L1),
+%line( 1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S0, S5, S6, S7], L1), %False estaciones repetidas
+%line( 1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S8], L1), %False no termina en terminal
+%line( 1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S9], L1), %False estaciones no comunican
+
 
 % calculando largo, distancia y costo
 lineLength(L1, LENGTH, DISTANCE, COST),
@@ -60,7 +66,7 @@ lineSectionLength(L1, "USACH", "Los Héroes", SECCIONES, DISTANCIA, COSTO),
 % añadir tramo a una linea
 lineAddSection(L0, S0, L0_1),
 
-isLine(L1, StationList).
+isLine(L1).
 
 
 */ 
