@@ -100,7 +100,7 @@ trainRemoveCar(T4, 1, T4_3),
 
 % evaluando si es tren
 isTrain(T4). %False pq no termina en terminal.
-isTrain(T5).
+isTrain(T1).
 
 
 */ 
