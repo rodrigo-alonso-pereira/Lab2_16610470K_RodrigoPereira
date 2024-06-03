@@ -545,11 +545,18 @@ Req 15: TDA driver - Constructor.
 */    
     
 driver(Id, Name, TrainMaker, [Id, Name, TrainMaker]).
+
+%-----------------------------------------------------------------------------------------------
+  
+/*
+Req 16: TDA subway - Constructor.
+ 
+- Descripcion =  Predicado que permite crear una red de metro.
+
+- MP: subway/3.
+*/   
     
-    
-    
-    
-    
+subway(Id, Name, [Id, Name]).
     
     
     
