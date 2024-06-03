@@ -114,7 +114,10 @@ trainCapacity(T1, C_T1), %C_T1 = 430
 
 % crando drivers
 driver(0, "Eren Yeager", "CAF", D0),
-driver(1, "Oliver Atom", "ALSTOM", D1).
+driver(1, "Oliver Atom", "ALSTOM", D1),
+
+% crando subway
+subway(0, "Metro Santiago", SW0).
 
 
 */ 
