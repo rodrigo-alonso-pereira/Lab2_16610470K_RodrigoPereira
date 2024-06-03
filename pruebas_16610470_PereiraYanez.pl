@@ -117,7 +117,11 @@ driver(0, "Eren Yeager", "CAF", D0),
 driver(1, "Oliver Atom", "ALSTOM", D1),
 
 % crando subway
-subway(0, "Metro Santiago", SW0).
+subway(0, "Metro Santiago", SW0),
+
+% agregando train a subway
+subwayAddTrain( Sw0, [T1], Sw1),
+subwayAddTrain( Sw1, [T2, T3, T4], Sw2).
 
 
 */ 
