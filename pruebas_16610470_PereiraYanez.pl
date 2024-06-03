@@ -83,23 +83,29 @@ pcar(3, 90, "NS-74", CT, PC3),
 pcar(4, 100, "AS-2014", CT, PC4),
 pcar(5, 100, "AS-2014", CT, PC5),
 pcar(6, 100, "AS-2016", CT, PC6),
+pcar(7, 120, "NS-74", TR, PC7),
 
 % creando train
 train(0, "CAF", "UIC 60 ASCE", 60, [ ], T0),
 train(1, "CAF", "UIC 60 ASCE", 70, [PC1, PC0, PC3, PC2], T1),
+train(2, "CAF", "UIC 60 ASCE", 80, [PC1, PC2], T1_2),
 
 % agregando pcar a train (indice empieza en 0)
 trainAddCar(T0, PC1, 0, T2),
 trainAddCar(T2, PC0, 1, T3),
 trainAddCar(T3, PC3, 2, T4),
 trainAddCar(T4, PC2, 3, T5), %T5 es identico a T1
+%trainAddCar(T1, PC1, 2, T1_2), %False xq PC1 ya existe en T1
+trainAddCar(T1, PC7, 2, T1_3), %T1_3 tiene carro terminal en medio
 
 % eliminando pcar a train (indice empieza en 0)
 trainRemoveCar(T4, 2, T4_2), %T4_2 es indentico a T3
 trainRemoveCar(T4, 1, T4_3),
 
 % evaluando si es tren
-isTrain(T4). %False pq no termina en terminal.
+%isTrain(T4). %False pq no termina en terminal.
+%isTrain(T1_3), %False pq tiene tren terminal en medio
+isTrain(T1_2), %True pq es tren en su estructura minima t-t
 isTrain(T1).
 
 
