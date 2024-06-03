@@ -110,7 +110,11 @@ isTrain(T1), %True
 
 % calculando capacidad del tren
 trainCapacity(T0, C_T0), %C_T0 = 0
-trainCapacity(T1, C_T1). %C_T1 = 430
+trainCapacity(T1, C_T1), %C_T1 = 430
+
+% crando drivers
+driver(0, "Eren Yeager", "CAF", D0),
+driver(1, "Oliver Atom", "ALSTOM", D1).
 
 
 */ 
