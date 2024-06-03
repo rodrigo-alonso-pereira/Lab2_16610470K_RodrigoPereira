@@ -354,6 +354,10 @@ Req 9: TDA pcar - Constructor.
 
 pcar(Id, Capacity, Model, Type, [Id, Capacity, Model, Type]).
 
+% Obtiene Capacity de pcar
+pcar_get_capacity(Pcar, Capacity) :-
+    pcar(_, Capacity, _, _, Pcar).
+
 % Obtiene Model de pcar
 pcar_get_model(Pcar, Model) :-
     pcar(_, _, Model, _, Pcar).
@@ -512,8 +516,33 @@ Req 13: TDA train - Pertenencia.
 isTrain(Train) :-
     train_get_pcars(Train, PcarList),
     is_pcar(PcarList).
+
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainCapacity. 
+  
+/*
+Req 14: TDA train - Otros predicados.
+ 
+- Descripcion =  Predicado que permite determinar la capacidad máxima de pasajeros del tren.
+
+- MP: trainCapacity/2.
+- MS: train_get_pcars/2,
+      sum_element_list/3.
+*/  
+
+trainCapacity(Train, Capacity) :-
+    train_get_pcars(Train, PcarList),
+    sum_element_list(PcarList, Capacity, pcar_get_capacity).
+
+  
     
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
