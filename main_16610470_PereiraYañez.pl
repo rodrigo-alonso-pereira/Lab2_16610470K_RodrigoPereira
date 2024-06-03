@@ -358,6 +358,10 @@ pcar(Id, Capacity, Model, Type, [Id, Capacity, Model, Type]).
 pcar_get_model(Pcar, Model) :-
     pcar(_, _, Model, _, Pcar).
 
+% Obtiene Type de pcar
+pcar_get_type(Pcar, Type) :-
+    pcar(_, _, _, Type, Pcar).
+
 
 %-----------------------------------------------------------------------------------------------
 /*
@@ -475,12 +479,22 @@ trainRemoveCar(Train, Position, NewTrain) :-
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar. 
 
-% Evalua si lista con TDA's tiene igual elemento particular entre ellas
-same_element_tda(List, Predicate) :-
+% Evalua si lista con TDA's tiene igual elemento en particular entre ellas
+same_element_in_tda(List, Predicate) :-
     get_element_from_list_tda(List, Predicate, 	NewList),
     all_element_equal(NewList).
 
+% Recorre lista y evalua si pcars estan correctament ensamblados
 
+
+%correct_pcar_assembly(List) :-
+    
+
+% Evalua si lista de pcars cumple con requerimientos
+is_pcar(ListPcars) :-
+    same_element_in_tda(ListPcars, pcar_get_model),
+    get_element_from_list_tda(ListPcars, pcar_get_type, TypeList),
+    print_element(TypeList).
 
 /*
 Req 13: TDA train - Pertenencia.
@@ -497,7 +511,8 @@ Req 13: TDA train - Pertenencia.
 % Estructura de train
 isTrain(Train) :-
     train_get_pcars(Train, ListPcars),
-    same_model(ListPcars, pcar_get_model).
+    is_pcar(ListPcars).
+    
 
 
 
