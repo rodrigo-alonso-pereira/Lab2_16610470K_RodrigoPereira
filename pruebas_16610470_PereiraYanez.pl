@@ -106,7 +106,11 @@ trainRemoveCar(T4, 1, T4_3),
 %isTrain(T4). %False pq no termina en terminal.
 %isTrain(T1_3), %False pq tiene tren terminal en medio
 isTrain(T1_2), %True pq es tren en su estructura minima t-t
-isTrain(T1).
+isTrain(T1), %True
+
+% calculando capacidad del tren
+trainCapacity(T0, C_T0), %C_T0 = 0
+trainCapacity(T1, C_T1). %C_T1 = 430
 
 
 */ 
