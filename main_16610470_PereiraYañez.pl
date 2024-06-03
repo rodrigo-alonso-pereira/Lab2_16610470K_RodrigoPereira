@@ -517,9 +517,7 @@ isTrain(Train) :-
     train_get_pcars(Train, PcarList),
     is_pcar(PcarList).
 
-%-----------------------------------------------------------------------------------------------
-
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainCapacity. 
+%----------------------------------------------------------------------------------------------- 
   
 /*
 Req 14: TDA train - Otros predicados.
@@ -535,9 +533,18 @@ trainCapacity(Train, Capacity) :-
     train_get_pcars(Train, PcarList),
     sum_element_list(PcarList, Capacity, pcar_get_capacity).
 
+%-----------------------------------------------------------------------------------------------
   
+/*
+Req 15: TDA driver - Constructor.
+ 
+- Descripcion =  Predicado que permite crear un conductor cuya habilitación de conducción 
+                 depende del fabricante de tren (train-maker).
+
+- MP: driver/4.
+*/    
     
-    
+driver(Id, Name, TrainMaker, [Id, Name, TrainMaker]).
     
     
     
