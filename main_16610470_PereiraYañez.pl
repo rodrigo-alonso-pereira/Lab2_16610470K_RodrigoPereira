@@ -2,6 +2,7 @@
 % TODO: Cambiar nombre por stationType
 type(Name, [Name]).
 
+% Obtiene nombre de Type 
 type_get_name(Type, Name) :-
     type(Name,Type).
 
@@ -266,22 +267,24 @@ partial_station_list([Section|Tail], NewStationList) :-
 get_element_from_list_tda([], _, []).
 
 get_element_from_list_tda([First|Tail], Predicate, ListElement) :-
-    call(Predicate, First, Id),
+    call(Predicate, First, Element),
     get_element_from_list_tda(Tail, Predicate, AccList),
-    append([Id], AccList, ListElement).
+    append([Element], AccList, ListElement).
 
-% Recorre lista verificando si elemento esta repetido en lista
-evaluate_repeated_element([First|Tail]) :-
-    belongs(First, Tail).
-evaluate_repeated_element([_|Tail]) :-
-    evaluate_repeated_element(Tail).
+% Recorre lista verificando si todos los elemento son iguales
+all_element_equal([]). % Si esta vacia es true
+
+all_element_equal([_]). % Si tiene un elemento es true
+
+all_element_equal([Element, Element|Tail]) :-
+    all_element_equal([Element|Tail]).
 
 % Evalua si station cumple con sus condiciones
 is_station(StationList) :-
     get_element_from_list_tda(StationList, station_get_id, IdList),
     get_element_from_list_tda(StationList, station_get_name, NameList),
-    not(evaluate_repeated_element(IdList)),
-    not(evaluate_repeated_element(NameList)).
+    not(all_element_equal(IdList)),
+    not(all_element_equal(NameList)).
 
 % Entrega primer elemento de lista
 first([First|_], First).
@@ -297,9 +300,9 @@ is_terminal(StationList) :-
     NameType1 == "Terminal",
     NameType2 == "Terminal".
 
-% Evalua si linea esta vacia
-is_empty_line(SectionList) :-
-    not(SectionList == []).
+% Evalua si lista esta vacia
+is_empty(List) :-
+    not(List == []).
 
 % Crear sublista con estaciones iniciales y finales de cada seccion de una linea
 full_station_list([], []).
@@ -323,7 +326,7 @@ is_section_communicates(SectionList) :-
 
 isLine(Line) :-
     line_get_sections(Line, SectionList),
-    is_empty_line(SectionList),
+    is_empty(SectionList),
     partial_station_list(SectionList, ParcialStationList),
     last(SectionList, LastSection),
     section_get_point2(LastSection, LastStation),
@@ -350,6 +353,10 @@ Req 9: TDA pcar - Constructor.
 */      
 
 pcar(Id, Capacity, Model, Type, [Id, Capacity, Model, Type]).
+
+% Obtiene Model de pcar
+pcar_get_model(Pcar, Model) :-
+    pcar(_, _, Model, _, Pcar).
 
 
 %-----------------------------------------------------------------------------------------------
@@ -466,7 +473,14 @@ trainRemoveCar(Train, Position, NewTrain) :-
 
  %-----------------------------------------------------------------------------------------------
 
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar.   
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar. 
+
+% Evalua si lista con TDA's tiene igual elemento particular entre ellas
+same_element_tda(List, Predicate) :-
+    get_element_from_list_tda(List, Predicate, 	NewList),
+    all_element_equal(NewList).
+
+
 
 /*
 Req 13: TDA train - Pertenencia.
@@ -477,8 +491,13 @@ Req 13: TDA train - Pertenencia.
 - MS: 
 */  
 
+
+% Evaluar ensamblado correcto
+% Mismo modelo
+% Estructura de train
 isTrain(Train) :-
-    
+    train_get_pcars(Train, ListPcars),
+    same_model(ListPcars, pcar_get_model).
 
 
 
