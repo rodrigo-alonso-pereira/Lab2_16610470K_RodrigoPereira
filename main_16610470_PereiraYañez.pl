@@ -557,6 +557,29 @@ Req 16: TDA subway - Constructor.
 */   
     
 subway(Id, Name, [Id, Name]).
+
+%-----------------------------------------------------------------------------------------------
+  
+/*
+Req 17: TDA subway - Modificador.
+ 
+- Descripcion =  Predicado que permite crear una red de metro.
+
+- MP: subwayAddTrain/3.
+- MS: 
+*/      
+    
+
+subwayAddTrain(Subway, Trains, NewSubway) :-
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
