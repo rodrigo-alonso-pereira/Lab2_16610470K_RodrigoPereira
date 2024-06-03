@@ -338,8 +338,8 @@ isLine(Line) :-
 % Constructor de carType
 car_type(Name, [Name]).
 
-car_type_get_name(carType, Name) :-
-    type(Name,carType).
+car_type_get_name(CarType, Name) :-
+    type(Name,CarType).
 
 
 %-----------------------------------------------------------------------------------------------
@@ -477,24 +477,27 @@ trainRemoveCar(Train, Position, NewTrain) :-
 
  %-----------------------------------------------------------------------------------------------
 
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar. 
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO isTrain. 
 
 % Evalua si lista con TDA's tiene igual elemento en particular entre ellas
 same_element_in_tda(List, Predicate) :-
     get_element_from_list_tda(List, Predicate, 	NewList),
     all_element_equal(NewList).
 
-% Recorre lista y evalua si pcars estan correctament ensamblados
-
-
-%correct_pcar_assembly(List) :-
-    
-
 % Evalua si lista de pcars cumple con requerimientos
-is_pcar(ListPcars) :-
-    same_element_in_tda(ListPcars, pcar_get_model),
-    get_element_from_list_tda(ListPcars, pcar_get_type, TypeList),
-    print_element(TypeList).
+is_pcar(PcarList) :-
+    same_element_in_tda(PcarList, pcar_get_model),
+    get_element_from_list_tda(PcarList, pcar_get_type, TypeList),
+    get_element_from_list_tda(TypeList, car_type_get_name, NameTypeList),
+    length_list(NameTypeList, Length),
+    first(NameTypeList, FirstNameType),
+    last(NameTypeList, LastNameType),
+    FirstNameType == "Terminal",
+    LastNameType == "Terminal",
+    remove_element_list(NameTypeList, 0, NameTypeList2),
+    LastPosition is Length - 2,
+    remove_element_list(NameTypeList2, LastPosition, MiddleNameTypeList),
+    all_element_equal(MiddleNameTypeList).
 
 /*
 Req 13: TDA train - Pertenencia.
@@ -502,16 +505,13 @@ Req 13: TDA train - Pertenencia.
 - Descripcion =  Predicado que permite determinar si un elemento es un tren válido.
 
 - MP: isTrain/1.
-- MS: 
+- MS: train_get_pcars/2,
+      is_pcar/1.
 */  
 
-
-% Evaluar ensamblado correcto
-% Mismo modelo
-% Estructura de train
 isTrain(Train) :-
-    train_get_pcars(Train, ListPcars),
-    is_pcar(ListPcars).
+    train_get_pcars(Train, PcarList),
+    is_pcar(PcarList).
     
 
 
