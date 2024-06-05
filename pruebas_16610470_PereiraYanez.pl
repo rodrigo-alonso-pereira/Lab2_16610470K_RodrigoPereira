@@ -120,8 +120,8 @@ driver(1, "Oliver Atom", "ALSTOM", D1),
 subway(0, "Metro Santiago", SW0),
 
 % agregando train a subway
-subwayAddTrain( Sw0, [T1], Sw1),
-subwayAddTrain( Sw1, [T2, T3, T4], Sw2),
+subwayAddTrain( SW0, [T1], SW1),
+subwayAddTrain( SW1, [T2, T3, T4], SW2),
 
 % agregando lines a subway
 subwayAddTrain(SW0, [T1], SW1),
