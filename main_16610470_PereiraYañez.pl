@@ -547,16 +547,23 @@ Req 15: TDA driver - Constructor.
 driver(Id, Name, TrainMaker, [Id, Name, TrainMaker]).
 
 %-----------------------------------------------------------------------------------------------
-  
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar.
+
+% Constructor de Subway
+subway(Id, Name, Lines, Trains, Drivers, [Id, Name, Lines, Trains, Drivers]).
+
 /*
 Req 16: TDA subway - Constructor.
  
 - Descripcion =  Predicado que permite crear una red de metro.
 
 - MP: subway/3.
+- MS: subway/6
 */   
     
-subway(Id, Name, [Id, Name]).
+subway(Id, Name, Subway) :-
+    subway(Id, Name, [], [], [], Subway).
 
 %-----------------------------------------------------------------------------------------------
   
@@ -570,7 +577,7 @@ Req 17: TDA subway - Modificador.
 */      
     
 
-subwayAddTrain(Subway, Trains, NewSubway) :-
+%subwayAddTrain(Subway, Trains, NewSubway) :-
     
     
     
