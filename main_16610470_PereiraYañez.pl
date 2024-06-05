@@ -548,10 +548,11 @@ driver(Id, Name, TrainMaker, [Id, Name, TrainMaker]).
 
 %-----------------------------------------------------------------------------------------------
 
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainRemoveCar.
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subway.
 
-% Constructor de Subway
+% Constructor de subway
 subway(Id, Name, Lines, Trains, Drivers, [Id, Name, Lines, Trains, Drivers]).
+
 
 /*
 Req 16: TDA subway - Constructor.
@@ -565,8 +566,26 @@ Req 16: TDA subway - Constructor.
 subway(Id, Name, Subway) :-
     subway(Id, Name, [], [], [], Subway).
 
+% GET DE TDA subway
+
+% Obtiene Id de subway
+subway_get_id(Subway, Id) :-
+    subway(Id, _, _, _, _, Subway).
+
+% Obtiene Name de subway
+subway_get_name(Subway, Name) :-
+    subway(_, Name, _, _, _, Subway).
+
 %-----------------------------------------------------------------------------------------------
-  
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subway.
+
+% Pensando en aplicar un foreach
+%verification_trains([], _) :-
+
+%verification_trains(TrainList) :-
+    
+
 /*
 Req 17: TDA subway - Modificador.
  
@@ -575,9 +594,13 @@ Req 17: TDA subway - Modificador.
 - MP: subwayAddTrain/3.
 - MS: 
 */      
-    
 
-%subwayAddTrain(Subway, Trains, NewSubway) :-
+subwayAddTrain(Subway, TrainsIn, NewSubway) :-
+    subway_get_id(Subway, Id),
+    subway_get_name(Subway, Name),
+    subway(_, _, Lines, Trains, Drivers, Subway),
+    append(Trains, TrainsIn, NewTrains),
+    subway(Id, Name, Lines, NewTrains, Drivers, NewSubway).
     
     
     
