@@ -263,7 +263,7 @@ partial_station_list([Section|Tail], NewStationList) :-
     partial_station_list(Tail, AccList),
     append([Station1], AccList, NewStationList).
 
-% Recorre lista de TDA's y obtiene elemento en particular
+% Recorre lista de TDA's y obtiene lista de un elemento en particular
 get_element_from_list_tda([], _, []).
 
 get_element_from_list_tda([First|Tail], Predicate, ListElement) :-
@@ -581,10 +581,16 @@ subway_get_name(Subway, Name) :-
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subway.
 
 % Pensando en aplicar un foreach
-%verification_trains([], _) :-
 
-%verification_trains(TrainList) :-
-    
+% Verifica si nuevo tren agregado cumple con condiciones de id's train no repetidos y id's pcar no repetidos
+% Revisar pq se produce loop.
+verification_trains(TrainList) :-
+	% Verificar si lista de trenes cumple con Id trai diferentes
+    print_element(TrainList),
+	get_element_from_list_tda(TrainList, train_get_id, IdList),
+    %print_element(IdList),
+    all_element_equal(IdList).
+    % Verificar si lista de trenes cumple con Id pcar diferentes  
 
 /*
 Req 17: TDA subway - Modificador.
@@ -598,8 +604,12 @@ Req 17: TDA subway - Modificador.
 subwayAddTrain(Subway, TrainsIn, NewSubway) :-
     subway_get_id(Subway, Id),
     subway_get_name(Subway, Name),
-    subway(_, _, Lines, Trains, Drivers, Subway),
-    append(Trains, TrainsIn, NewTrains),
+    subway(_, _, Lines, OldTrains, Drivers, Subway),
+    %print_element(TrainsIn),
+    %print_element(OldTrains),
+    append(OldTrains, TrainsIn, NewTrains),
+    print_element(NewTrains),
+    verification_trains(NewTrains),
     subway(Id, Name, Lines, NewTrains, Drivers, NewSubway).
     
     
