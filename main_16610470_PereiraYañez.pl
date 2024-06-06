@@ -354,6 +354,10 @@ Req 9: TDA pcar - Constructor.
 
 pcar(Id, Capacity, Model, Type, [Id, Capacity, Model, Type]).
 
+% Obtiene Id de pcar
+pcar_get_id(Pcar, Id) :-
+    pcar(Id, _, _, _, Pcar).
+
 % Obtiene Capacity de pcar
 pcar_get_capacity(Pcar, Capacity) :-
     pcar(_, Capacity, _, _, Pcar).
@@ -580,35 +584,59 @@ subway_get_name(Subway, Name) :-
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subway.
 
-% Pensando en aplicar un foreach
+% Une dos sublistas en una lista
+join_list([], []).
+
+join_list([First|Tail], NewList) :-
+    join_list(Tail, Acc),
+    append(First, Acc, NewList).
+
+% Recorre lista y verifica algun predicado en particular
+foreach([], _).
+
+foreach([First|Tail], Predicate) :-
+    call(Predicate, First),
+    foreach(Tail, Predicate).
 
 % Verifica si nuevo tren agregado cumple con condiciones de id's train no repetidos y id's pcar no repetidos
-% Revisar pq se produce loop.
+% ademas verifica si train o lista de trains es o son trenes validos
 verification_trains(TrainList) :-
-	% Verificar si lista de trenes cumple con Id trai diferentes
-    print_element(TrainList),
-	get_element_from_list_tda(TrainList, train_get_id, IdList),
-    %print_element(IdList),
-    all_element_equal(IdList).
-    % Verificar si lista de trenes cumple con Id pcar diferentes  
-
+	get_element_from_list_tda(TrainList, train_get_id, IdTrainList),
+    get_element_from_list_tda(TrainList, train_get_pcars, PcarList),
+    join_list(PcarList, NewPcarList),
+    get_element_from_list_tda(NewPcarList, pcar_get_id, IdPcarList),
+    length_list(IdTrainList, LengthIdTrainList),
+    length_list(IdPcarList, LengthIdPcarList),
+    (LengthIdTrainList > 1 ->  
+    	not(all_element_equal(IdTrainList)) %Si todos son diferentes
+    ;   
+    	all_element_equal(IdTrainList)),
+    (LengthIdPcarList > 1 ->  
+        not(all_element_equal(IdPcarList))
+    ;   
+    	all_element_equal(IdPcarList)).
+	
 /*
 Req 17: TDA subway - Modificador.
  
 - Descripcion =  Predicado que permite crear una red de metro.
 
 - MP: subwayAddTrain/3.
-- MS: 
+- MS: foreach/2,
+      subway_get_id/2,
+      subway_get_name/2,
+      subway/6,
+      append/3,
+      verification_trains/1,
+      subway/6.
 */      
 
 subwayAddTrain(Subway, TrainsIn, NewSubway) :-
+    foreach(TrainsIn, isTrain),
     subway_get_id(Subway, Id),
     subway_get_name(Subway, Name),
     subway(_, _, Lines, OldTrains, Drivers, Subway),
-    %print_element(TrainsIn),
-    %print_element(OldTrains),
     append(OldTrains, TrainsIn, NewTrains),
-    print_element(NewTrains),
     verification_trains(NewTrains),
     subway(Id, Name, Lines, NewTrains, Drivers, NewSubway).
     
