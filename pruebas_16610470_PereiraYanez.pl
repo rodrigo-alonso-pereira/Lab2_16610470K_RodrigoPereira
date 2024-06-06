@@ -120,8 +120,11 @@ driver(1, "Oliver Atom", "ALSTOM", D1),
 subway(0, "Metro Santiago", SW0),
 
 % agregando train a subway
-subwayAddTrain(SW0, [T1], SW1),
-subwayAddTrain(SW1, [T1_2], SW2).
+subwayAddTrain(SW0, [T1], SW1), % True
+subwayAddTrain(SW1, [T2], SW2), % True
+subwayAddTrain(SW0, [T1, T2], SW3). % True, otra forma de asignar trenes a subway
+%subwayAddTrain(SW2, [T3, T0_1], SW3), % False pq T3 y T0_1 no cumple con condicion isTrain
 
 
 */ 
+
