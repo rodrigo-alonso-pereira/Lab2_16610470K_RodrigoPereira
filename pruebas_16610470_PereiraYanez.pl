@@ -127,9 +127,14 @@ subwayAddTrain(SW0, [T1, T2], SW3), % True, otra forma de asignar trenes a subwa
 
 % agregando lines a subway
 subwayAddLine(SW1_2, [L1], Sw2), % True
-subwayAddLine(Sw2, [L2, L6], Sw2_2). %True
+subwayAddLine(Sw2, [L2, L6], Sw2_2), %True
 %subwayAddLine(Sw2_2, [L1], Sw2_3), %False pq L1 ya existe
 %subwayAddLine(SW0, [L0], SW4). %False pq L0 no cumple con condicion de ser linea valida
+
+% agregando drivers a subway
+subwayAddDriver(Sw2_2, [D0], SW5), %True
+subwayAddDriver(SW5, [D1, D2, D3], SW5_1), %True
+%subwayAddDriver(SW5_1, [D0], SW5_2). %False, pq D0 ya esta agregado a SW5_1
 
 
 
