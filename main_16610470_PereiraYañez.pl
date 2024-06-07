@@ -561,6 +561,10 @@ Req 15: TDA driver - Constructor.
     
 driver(Id, Name, TrainMaker, [Id, Name, TrainMaker]).
 
+% Obtiene Id de driver
+driver_get_id(Driver, Id) :-
+    driver(Id, _, _, Driver).
+
 %-----------------------------------------------------------------------------------------------
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subway.
@@ -622,7 +626,7 @@ verification_trains(TrainList) :-
 /*
 Req 17: TDA subway - Modificador.
  
-- Descripcion =  Predicado que permite crear una red de metro.
+- Descripcion =  Predicado que permite añadir trenes a una red de metro.
 
 - MP: subwayAddTrain/3.
 - MS: foreach/2,
@@ -647,17 +651,24 @@ subwayAddTrain(Subway, TrainsIn, NewSubway) :-
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAddLine.    
 
-verification_lines(NewLines) :-
-    get_element_from_list_tda(NewLines, line_get_id, IdLineList),
+% Verifica si las lineas a agregar cumplen con tener ids diferentes
+verification_lines(LineList) :-
+    get_element_from_list_tda(LineList, line_get_id, IdLineList),
     all_element_different(IdLineList).
 
 /*
 Req 18: TDA subway - Modificador.
  
-- Descripcion =  Predicado que permite añadir conductores a una red de metro.
+- Descripcion =  Predicado que permite añadir líneas a una red de metro.
 
 - MP: subwayAddLine/3.
-- MS: 
+- MS: foreach/2,
+      subway_get_id/2,
+      subway_get_name/2,
+      subway/6,
+      append/3,
+      verification_lines/1,
+      subway/6.
 */       
 
 subwayAddLine(Subway, LinesIn, NewSubway) :-
@@ -668,8 +679,32 @@ subwayAddLine(Subway, LinesIn, NewSubway) :-
     append(OldLines, LinesIn, NewLines),
     verification_lines(NewLines),
     subway(Id, Name, NewLines, Trains, Drivers, NewSubway).
-    
-    
+
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAddLine.    
+
+% Verifica que drivers no esten repetidos
+verification_driver(DriverList) :-
+  get_element_from_list_tda(DriverList, driver_get_id, IdDriverList),
+    all_element_different(IdDriverList).
+
+/*
+Req 19: TDA subway - Modificador.
+ 
+- Descripcion =  Predicado que permite añadir conductores a una red de metro.
+
+- MP: subwayAddDriver/3.
+- MS: 
+*/       
+  
+subwayAddDriver(Subway, DriversIn, NewSubway) :-
+    subway_get_id(Subway, Id),
+    subway_get_name(Subway, Name),
+    subway(_, _, Lines, Trains, OldDrivers, Subway),
+    append(OldDrivers, DriversIn, NewDrivers),
+    verification_driver(NewDrivers),
+    subway(Id, Name, Lines, Trains, NewDrivers, NewSubway).
     
     
     
