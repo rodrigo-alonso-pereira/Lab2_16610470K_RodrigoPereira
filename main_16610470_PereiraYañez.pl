@@ -279,12 +279,21 @@ all_element_equal([_]). % Si tiene un elemento es true
 all_element_equal([Element, Element|Tail]) :-
     all_element_equal([Element|Tail]).
 
+% Recorre lista verificando si todos los elemento son diferentes
+all_element_different([]).
+
+all_element_different([_]).
+
+all_element_different([First|Tail]) :-
+   not(belongs(First, Tail)),
+    all_element_different(Tail).
+
 % Evalua si station cumple con sus condiciones
 is_station(StationList) :-
     get_element_from_list_tda(StationList, station_get_id, IdList),
     get_element_from_list_tda(StationList, station_get_name, NameList),
-    not(all_element_equal(IdList)),
-    not(all_element_equal(NameList)).
+    all_element_different(IdList),
+    all_element_different(NameList).
 
 % Entrega primer elemento de lista
 first([First|_], First).
@@ -600,15 +609,6 @@ foreach([First|Tail], Predicate) :-
     call(Predicate, First),
     foreach(Tail, Predicate).
 
-% Recorre lista verificando si todos los elemento son diferentes
-all_element_different([]).
-
-all_element_different([_]).
-
-all_element_different([First|Tail]) :-
-   not(belongs(First, Tail)),
-    all_element_different(Tail).
-
 % Verifica si nuevo tren agregado cumple con condiciones de id's train no repetidos y id's pcar no repetidos
 % ademas verifica si train o lista de trains es o son trenes validos
 verification_trains(TrainList) :-
@@ -616,16 +616,8 @@ verification_trains(TrainList) :-
     get_element_from_list_tda(TrainList, train_get_pcars, PcarList),
     join_list(PcarList, NewPcarList),
     get_element_from_list_tda(NewPcarList, pcar_get_id, IdPcarList),
-    length_list(IdTrainList, LengthIdTrainList),
-    length_list(IdPcarList, LengthIdPcarList),
-    (LengthIdTrainList > 1 ->  
-    	not(all_element_equal(IdTrainList)) %Si todos son diferentes
-    ;   
-    	all_element_equal(IdTrainList)),
-    (LengthIdPcarList > 1 ->  
-        not(all_element_equal(IdPcarList))
-    ;   
-    	all_element_equal(IdPcarList)).
+    all_element_different(IdTrainList),
+    all_element_different(IdPcarList).
 	
 /*
 Req 17: TDA subway - Modificador.
