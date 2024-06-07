@@ -121,9 +121,16 @@ subway(0, "Metro Santiago", SW0),
 
 % agregando train a subway
 subwayAddTrain(SW0, [T1], SW1), % True
-subwayAddTrain(SW1, [T2], SW2), % True
-subwayAddTrain(SW0, [T1, T2], SW3). % True, otra forma de asignar trenes a subway
+subwayAddTrain(SW1, [T2], SW1_2), % True
+subwayAddTrain(SW0, [T1, T2], SW3), % True, otra forma de asignar trenes a subway
 %subwayAddTrain(SW2, [T3, T0_1], SW3), % False pq T3 y T0_1 no cumple con condicion isTrain
+
+% agregando lines a subway
+subwayAddLine(SW1_2, [L1], Sw2), % True
+subwayAddLine(Sw2, [L2, L6], Sw2_2). %True
+%subwayAddLine(Sw2_2, [L1], Sw2_3), %False pq L1 ya existe
+%subwayAddLine(SW0, [L0], SW4). %False pq L0 no cumple con condicion de ser linea valida
+
 
 
 */ 
