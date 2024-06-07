@@ -18,7 +18,10 @@ subwayAddLine(Sub0, [L1_2], Sub2).
 
 */
 
+%--------------------------------------------------------------------------------
+
 /*
+
 % creando type's
 type("Regular", R),
 type("Mantencion", M),
@@ -36,6 +39,14 @@ station(6, "La Moneda", R, 40, ST6),
 station(7, "U. de Chile", C, 40, ST7),
 station(8, "Santa Lucia", T, 45, ST8),
 station(9, "Cochera", M, 3600, ST9),
+station(10, "La Cisterna", T, 35, ST10),
+station(11, "El Parron", R, 30, ST11),
+station(12, "Lo Ovalle", C, 40, ST12),
+station(13, "Ciudad del Niño", T, 25, ST13),
+station(20, "Cerrillos", T, 30, ST20),
+station(21, "Lo Valledor", C, 40, ST21),
+station(22, "Pedro Aguirre Cerda", R, 20, ST22),
+station(23, "Franklin", T, 40, ST23),
 
 % creando una nueva sección
 section(ST0, ST1, 2, 50, S0),
@@ -44,14 +55,22 @@ section(ST2, ST3, 1.5, 30, S2),
 section(ST3, ST4, 3, 45, S3),
 section(ST4, ST5, 3, 45, S4),
 section(ST5, ST6, 1.4, 50, S5),
-section(ST6, ST7, 2,  40, S6),
-section(ST7, ST8, 3,  200, S7),
-section(ST8, ST9, 3,  200, S8), %Seccion que Incluye cochera
-section(ST6, ST8, 3,  200, S9), 
+section(ST6, ST7, 2, 40, S6),
+section(ST7, ST8, 3, 20, S7),
+section(ST8, ST9, 3, 50, S8), %Seccion que Incluye cochera
+section(ST6, ST8, 3, 30, S9), 
+section(ST10, ST11, 4, 50, S10), 
+section(ST11, ST12, 2, 40, S11), 
+section(ST12, ST13, 2.5, 45, S12), 
+section(ST20, ST21, 3,  50, S20), 
+section(ST21, ST22, 4, 40, S21), 
+section(ST22, ST23, 1.5, 50, S22), 
 
 % creando lineas
 line(0, "Línea 0", "UIC 60 ASCE", [ ], L0),
 line(1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S7], L1),
+line(2, "Línea 2", "100 R.E.", [S10, S11, S12], L2),
+line(6, "Línea 6", "100 R.E.", [S20, S21, S22], L6),
 %line(1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S0, S5, S6, S7], L1), %False estaciones repetidas
 %line(1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S8], L1), %False no termina en terminal
 %line(1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S9], L1), %False estaciones no comunican
@@ -88,13 +107,13 @@ pcar(7, 120, "NS-74", TR, PC7),
 % creando train
 train(0, "CAF", "UIC 60 ASCE", 60, [ ], T0),
 train(1, "CAF", "UIC 60 ASCE", 70, [PC1, PC0, PC3, PC2], T1),
-train(2, "CAF", "UIC 60 ASCE", 80, [PC1, PC2], T1_2),
+train(2, "CAF", "UIC 60 ASCE", 80, [PC1, PC2], T2),
 
 % agregando pcar a train (indice empieza en 0)
-trainAddCar(T0, PC1, 0, T2),
-trainAddCar(T2, PC0, 1, T3),
-trainAddCar(T3, PC3, 2, T4),
-trainAddCar(T4, PC2, 3, T5), %T5 es identico a T1
+trainAddCar(T0, PC1, 0, T0_1),
+trainAddCar(T0_1, PC0, 1, T0_2),
+trainAddCar(T0_2, PC3, 2, T0_3),
+trainAddCar(T0_3, PC2, 3, T0_4), %T0_4 es identico a T1
 %trainAddCar(T1, PC1, 2, T1_2), %False xq PC1 ya existe en T1
 trainAddCar(T1, PC7, 2, T1_3), %T1_3 tiene carro terminal en medio
 
@@ -115,6 +134,9 @@ trainCapacity(T1, C_T1), %C_T1 = 430
 % crando drivers
 driver(0, "Eren Yeager", "CAF", D0),
 driver(1, "Oliver Atom", "ALSTOM", D1),
+driver(2, "Kakaroto", "CAF", D2),
+driver(3, "Levy Ackerman", "ALSTOM", D3),
+driver(4, "Hanamichi Sakuragi", "CAF", D4),
 
 % crando subway
 subway(0, "Metro Santiago", SW0),
@@ -135,8 +157,6 @@ subwayAddLine(Sw2, [L2, L6], Sw2_2), %True
 subwayAddDriver(Sw2_2, [D0], SW5), %True
 subwayAddDriver(SW5, [D1, D2, D3], SW5_1), %True
 %subwayAddDriver(SW5_1, [D0], SW5_2). %False, pq D0 ya esta agregado a SW5_1
-
-
 
 */ 
 
