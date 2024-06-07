@@ -60,7 +60,7 @@ section(ST7, ST8, 3, 20, S7),
 section(ST8, ST9, 3, 50, S8), %Seccion que Incluye cochera
 section(ST6, ST8, 3, 30, S9), 
 section(ST10, ST11, 4, 50, S10), 
-section(ST11, ST12, 2, 40, S11), 
+section(ST11, ST12, 3, 40, S11), 
 section(ST12, ST13, 2.5, 45, S12), 
 section(ST20, ST21, 3,  50, S20), 
 section(ST21, ST22, 4, 40, S21), 
@@ -75,20 +75,28 @@ line(6, "Línea 6", "100 R.E.", [S20, S21, S22], L6),
 %line(1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S8], L1), %False no termina en terminal
 %line(1, "Línea 1", "100 R.E.", [S0, S1, S2, S3, S4, S5, S6, S9], L1), %False estaciones no comunican
 
-
 % calculando largo, distancia y costo
-lineLength(L1, LENGTH, DISTANCE, COST),
+lineLength(L1, LengthL1, DistanceL1, CostL1), %LengthL1=9, DistanceL1=18.4, CostL1=335
+lineLength(L2, LengthL2, DistanceL2, CostL2), %LengthL2=4, DistanceL2=9.5, CostL2=135
+lineLength(L6, LengthL6, DistanceL6, CostL6), %LengthL6=4, DistanceL6=8.5, CostL6=140
 
 % determinar trayecto entre estaciones, junto con su distancia y costo.
-lineSectionLength(L1, "USACH", "Los Héroes", SECCIONES, DISTANCIA, COSTO),
+lineSectionLength(L1, "USACH", "Los Héroes", SectionL1, DisSectionL1, CostSectionL1), %SectionL1, DisSectionL1=10 , CostSectionL1=175 
+lineSectionLength(L2, "La Cisterna", "Lo Ovalle", SectionL2, DisSectionL2, CostSectionL2), %SectionL2, DisSectionL2=7 , CostSectionL2=90 
+lineSectionLength(L6, "Cerrillos", "Franklin", SectionL6, DisSectionL6, CostSectionL6), %SectionL6, DisSectionL6=8.5 , CostSectionL6=140  
 
 % añadir tramo a una linea
 lineAddSection(L0, S0, L0_1),
+lineAddSection(L0_1, S4, L0_2),
+lineAddSection(L0_2, S7, L0_3),
 
 % evaluando linea
 %isLine(L0_1). %false por que no tiene estacion terminal
-%isLine(L0). %false
+%isLine(L0). %false pq esta vacia
+%isLine(L0_3). %false pq no esta conectada
 isLine(L1), %true
+isLine(L2), %true
+isLine(L6), %true
 
 % creando carType's
 car_type("Central", CT),
@@ -103,33 +111,36 @@ pcar(4, 100, "AS-2014", CT, PC4),
 pcar(5, 100, "AS-2014", CT, PC5),
 pcar(6, 100, "AS-2016", CT, PC6),
 pcar(7, 120, "NS-74", TR, PC7),
+pcar(8, 150, "NS-74", TR, PC8),
 
 % creando train
 train(0, "CAF", "UIC 60 ASCE", 60, [ ], T0),
 train(1, "CAF", "UIC 60 ASCE", 70, [PC1, PC0, PC3, PC2], T1),
-train(2, "CAF", "UIC 60 ASCE", 80, [PC1, PC2], T2),
+train(2, "ALSTOM", "UIC 60 ASCE", 80, [PC7, PC8], T2),
 
 % agregando pcar a train (indice empieza en 0)
 trainAddCar(T0, PC1, 0, T0_1),
 trainAddCar(T0_1, PC0, 1, T0_2),
 trainAddCar(T0_2, PC3, 2, T0_3),
-trainAddCar(T0_3, PC2, 3, T0_4), %T0_4 es identico a T1
+trainAddCar(T0_3, PC2, 3, T0_4), %T0_4 es identico a en pcar T1
 %trainAddCar(T1, PC1, 2, T1_2), %False xq PC1 ya existe en T1
 trainAddCar(T1, PC7, 2, T1_3), %T1_3 tiene carro terminal en medio
 
 % eliminando pcar a train (indice empieza en 0)
-trainRemoveCar(T4, 2, T4_2), %T4_2 es indentico a T3
-trainRemoveCar(T4, 1, T4_3),
+trainRemoveCar(T0_4, 2, T0_4_2), 
+trainRemoveCar(T0_4_2, 1, T0_4_3), %Tren con estructura T-T
 
 % evaluando si es tren
-%isTrain(T4). %False pq no termina en terminal.
+%isTrain(T0). %False pq no termina en terminal.
 %isTrain(T1_3), %False pq tiene tren terminal en medio
-isTrain(T1_2), %True pq es tren en su estructura minima t-t
+isTrain(T0_4_2), %True pq es tren en su estructura T-C-T
+isTrain(T2), %True pq es tren en su estructura minima T-T
 isTrain(T1), %True
 
 % calculando capacidad del tren
 trainCapacity(T0, C_T0), %C_T0 = 0
 trainCapacity(T1, C_T1), %C_T1 = 430
+trainCapacity(T2, C_T2), %C_T2 = 250
 
 % crando drivers
 driver(0, "Eren Yeager", "CAF", D0),
@@ -137,6 +148,7 @@ driver(1, "Oliver Atom", "ALSTOM", D1),
 driver(2, "Kakaroto", "CAF", D2),
 driver(3, "Levy Ackerman", "ALSTOM", D3),
 driver(4, "Hanamichi Sakuragi", "CAF", D4),
+driver(5, "Monkey D. Luffy", "ALSTOM", D5),
 
 % crando subway
 subway(0, "Metro Santiago", SW0),
@@ -144,19 +156,23 @@ subway(0, "Metro Santiago", SW0),
 % agregando train a subway
 subwayAddTrain(SW0, [T1], SW1), % True
 subwayAddTrain(SW1, [T2], SW1_2), % True
-subwayAddTrain(SW0, [T1, T2], SW3), % True, otra forma de asignar trenes a subway
-%subwayAddTrain(SW2, [T3, T0_1], SW3), % False pq T3 y T0_1 no cumple con condicion isTrain
+subwayAddTrain(SW0, [T1, T2], SW3), % True, otra forma de asignar trenes a subway SW1_2 = SW3
+%subwayAddTrain(SW3, [T1_3], SW3_1), % False pq T1_3 no cumple con condicion isTrain
+%subwayAddTrain(SW3, [T1], SW3_2), %False pq T1 ya esta agregada
 
 % agregando lines a subway
-subwayAddLine(SW1_2, [L1], Sw2), % True
-subwayAddLine(Sw2, [L2, L6], Sw2_2), %True
+subwayAddLine(SW1_2, [L1], SW2), % True
+subwayAddLine(SW2, [L2, L6], SW2_2), %True
+subwayAddLine(SW3, [L2, L6], SW5), %True
 %subwayAddLine(Sw2_2, [L1], Sw2_3), %False pq L1 ya existe
 %subwayAddLine(SW0, [L0], SW4). %False pq L0 no cumple con condicion de ser linea valida
 
 % agregando drivers a subway
-subwayAddDriver(Sw2_2, [D0], SW5), %True
-subwayAddDriver(SW5, [D1, D2, D3], SW5_1), %True
-%subwayAddDriver(SW5_1, [D0], SW5_2). %False, pq D0 ya esta agregado a SW5_1
+subwayAddDriver(SW2_2, [D0], SW6), %True
+subwayAddDriver(SW6, [D1, D2, D3], SW6_1), %True
+subwayAddDriver(SW5, [D4, D5], SW7), %True
+%subwayAddDriver(SW6_1, [D0], SW6_2). %False, pq D0 ya esta agregado a SW6_1
+
 
 */ 
 
