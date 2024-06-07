@@ -302,7 +302,7 @@ is_terminal(StationList) :-
 
 % Evalua si lista esta vacia
 is_empty(List) :-
-    not(List == []).
+    not(List == []). %cambiar logica
 
 % Crear sublista con estaciones iniciales y finales de cada seccion de una linea
 full_station_list([], []).
@@ -334,15 +334,17 @@ isLine(Line) :-
     is_station(StationList),
     is_terminal(StationList),
     is_section_communicates(SectionList).
-    
+
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO pcar.
+
 % Constructor de carType
 car_type(Name, [Name]).
 
 car_type_get_name(CarType, Name) :-
     type(Name,CarType).
 
-
-%-----------------------------------------------------------------------------------------------
 /*
 Req 9: TDA pcar - Constructor.
  
@@ -582,7 +584,7 @@ subway_get_name(Subway, Name) :-
 
 %-----------------------------------------------------------------------------------------------
 
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subway.
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAddTrain.
 
 % Une dos sublistas en una lista
 join_list([], []).
@@ -597,6 +599,15 @@ foreach([], _).
 foreach([First|Tail], Predicate) :-
     call(Predicate, First),
     foreach(Tail, Predicate).
+
+% Recorre lista verificando si todos los elemento son diferentes
+all_element_different([]).
+
+all_element_different([_]).
+
+all_element_different([First|Tail]) :-
+   not(belongs(First, Tail)),
+    all_element_different(Tail).
 
 % Verifica si nuevo tren agregado cumple con condiciones de id's train no repetidos y id's pcar no repetidos
 % ademas verifica si train o lista de trains es o son trenes validos
@@ -639,9 +650,32 @@ subwayAddTrain(Subway, TrainsIn, NewSubway) :-
     append(OldTrains, TrainsIn, NewTrains),
     verification_trains(NewTrains),
     subway(Id, Name, Lines, NewTrains, Drivers, NewSubway).
-    
-    
-    
+
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAddLine.    
+
+verification_lines(NewLines) :-
+    get_element_from_list_tda(NewLines, line_get_id, IdLineList),
+    all_element_different(IdLineList).
+
+/*
+Req 18: TDA subway - Modificador.
+ 
+- Descripcion =  Predicado que permite añadir conductores a una red de metro.
+
+- MP: subwayAddLine/3.
+- MS: 
+*/       
+
+subwayAddLine(Subway, LinesIn, NewSubway) :-
+    foreach(LinesIn, isLine),
+    subway_get_id(Subway, Id),
+    subway_get_name(Subway, Name),
+    subway(_, _, OldLines, Trains, Drivers, Subway),
+    append(OldLines, LinesIn, NewLines),
+    verification_lines(NewLines),
+    subway(Id, Name, NewLines, Trains, Drivers, NewSubway).
     
     
     
