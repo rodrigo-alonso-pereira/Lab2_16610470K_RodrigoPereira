@@ -108,9 +108,9 @@ print_element(Element) :-
     nl.
 
 % Evalua si existe elemento en lista
-belongs(Element, [Element|_]).
+belongs(Element, [Element|_]) :- !.
 
-belongs(Element, [_|Tail]) :-
+belongs(Element, [_|Tail]) :- 
     belongs(Element, Tail).
 
 % Suma los elementos de una lista de TDAs
@@ -310,8 +310,7 @@ is_terminal(StationList) :-
     NameType2 == "Terminal".
 
 % Evalua si lista esta vacia
-is_empty(List) :-
-    not(List == []). %cambiar logica
+is_empty([]).
 
 % Crear sublista con estaciones iniciales y finales de cada seccion de una linea
 full_station_list([], []).
@@ -335,13 +334,13 @@ is_section_communicates(SectionList) :-
 
 isLine(Line) :-
     line_get_sections(Line, SectionList),
-    is_empty(SectionList),
+    not(is_empty(SectionList)), !, %Verifica que line no este vacia
     partial_station_list(SectionList, ParcialStationList),
     last(SectionList, LastSection),
     section_get_point2(LastSection, LastStation),
     append(ParcialStationList, [LastStation], StationList),
-    is_station(StationList),
-    is_terminal(StationList),
+    is_station(StationList), !,
+    is_terminal(StationList), !,
     is_section_communicates(SectionList).
 
 %-----------------------------------------------------------------------------------------------
@@ -420,9 +419,9 @@ train_get_pcars(Train, Pcars) :-
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO trainAddCar.
 
 % Permite agregar un elemento en una lista con posicion dada
-add_element_list([], Element, 0, [Element]).
+add_element_list([], Element, 0, [Element]) :- !.
 
-add_element_list(List, Element, 0, [Element|List]).
+add_element_list(List, Element, 0, [Element|List]) :- !.
 
 add_element_list([First|Tail], Element, Position, [First|NewTail]) :-
     Position > 0,
@@ -454,7 +453,7 @@ trainAddCar(Train, Pcar, Position, NewTrain) :-
     train_get_pcars(Train, PcarList),
     not(belongs(Pcar, PcarList)),
     add_element_list(PcarList, Pcar, Position, NewPcarList),
-    train(Id, Maker, RailType, Speed, NewPcarList, NewTrain).
+    train(Id, Maker, RailType, Speed, NewPcarList, NewTrain), !.
 
 %-----------------------------------------------------------------------------------------------
 
@@ -572,6 +571,18 @@ driver_get_id(Driver, Id) :-
 % Constructor de subway
 subway(Id, Name, Lines, Trains, Drivers, [Id, Name, Lines, Trains, Drivers]).
 
+% Obtiene Lines de subway
+subway_get_lines(Subway, Lines) :-
+    subway(_, _, Lines, _, _, Subway).
+
+% Obtiene Trains de subway
+subway_get_trains(Subway, Trains) :-
+    subway(_, _, _, Trains, _, Subway).
+
+% Obtiene Drivers de subway
+subway_get_drivers(Subway, Drivers) :-
+    subway(_, _, _, _, Drivers, Subway).
+
 
 /*
 Req 16: TDA subway - Constructor.
@@ -613,8 +624,8 @@ foreach([First|Tail], Predicate) :-
     call(Predicate, First),
     foreach(Tail, Predicate).
 
-% Verifica si nuevo tren agregado cumple con condiciones de id's train no repetidos y id's pcar no repetidos
-% ademas verifica si train o lista de trains es o son trenes validos
+% Verifica si nuevo tren agregado cumple con condiciones de id's train no repetidos y id's pcar 
+% no repetidos, ademas verifica si train o lista de trains es o son trenes validos
 verification_trains(TrainList) :-
 	get_element_from_list_tda(TrainList, train_get_id, IdTrainList),
     get_element_from_list_tda(TrainList, train_get_pcars, PcarList),
@@ -642,10 +653,12 @@ subwayAddTrain(Subway, TrainsIn, NewSubway) :-
     foreach(TrainsIn, isTrain),
     subway_get_id(Subway, Id),
     subway_get_name(Subway, Name),
-    subway(_, _, Lines, OldTrains, Drivers, Subway),
+    subway_get_lines(Subway, Lines),
+    subway_get_trains(Subway, OldTrains),
+    subway_get_drivers(Subway, Drivers),
     append(OldTrains, TrainsIn, NewTrains),
     verification_trains(NewTrains),
-    subway(Id, Name, Lines, NewTrains, Drivers, NewSubway).
+    subway(Id, Name, Lines, NewTrains, Drivers, NewSubway), !.
 
 %-----------------------------------------------------------------------------------------------
 
@@ -675,10 +688,12 @@ subwayAddLine(Subway, LinesIn, NewSubway) :-
     foreach(LinesIn, isLine),
     subway_get_id(Subway, Id),
     subway_get_name(Subway, Name),
-    subway(_, _, OldLines, Trains, Drivers, Subway),
+    subway_get_lines(Subway, OldLines),
+    subway_get_trains(Subway, Trains),
+    subway_get_drivers(Subway, Drivers),
     append(OldLines, LinesIn, NewLines),
     verification_lines(NewLines),
-    subway(Id, Name, NewLines, Trains, Drivers, NewSubway).
+    subway(Id, Name, NewLines, Trains, Drivers, NewSubway), !.
 
 %-----------------------------------------------------------------------------------------------
 
@@ -701,10 +716,12 @@ Req 19: TDA subway - Modificador.
 subwayAddDriver(Subway, DriversIn, NewSubway) :-
     subway_get_id(Subway, Id),
     subway_get_name(Subway, Name),
-    subway(_, _, Lines, Trains, OldDrivers, Subway),
+    subway_get_lines(Subway, Lines),
+    subway_get_trains(Subway, Trains),
+    subway_get_drivers(Subway, OldDrivers),
     append(OldDrivers, DriversIn, NewDrivers),
     verification_driver(NewDrivers),
-    subway(Id, Name, Lines, Trains, NewDrivers, NewSubway).
+    subway(Id, Name, Lines, Trains, NewDrivers, NewSubway), !.
     
     
     
