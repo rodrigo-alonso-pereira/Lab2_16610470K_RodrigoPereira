@@ -472,7 +472,7 @@ remove_element_list([First|Tail], Position, [First|NewTail]) :-
 /*
 Req 12: TDA train - Modificador.
  
-- Descripcion =  Predicado que permite eliminar un carro desde el convoy.
+- Descripcion = Predicado que permite eliminar un carro desde el convoy.
 
 - MP: trainRemoveCar/3.
 - MS: train_get_id/2,
@@ -520,7 +520,7 @@ is_pcar(PcarList) :-
 /*
 Req 13: TDA train - Pertenencia.
  
-- Descripcion =  Predicado que permite determinar si un elemento es un tren válido.
+- Descripcion = Predicado que permite determinar si un elemento es un tren válido.
 
 - MP: isTrain/1.
 - MS: train_get_pcars/2,
@@ -536,7 +536,7 @@ isTrain(Train) :-
 /*
 Req 14: TDA train - Otros predicados.
  
-- Descripcion =  Predicado que permite determinar la capacidad máxima de pasajeros del tren.
+- Descripcion = Predicado que permite determinar la capacidad máxima de pasajeros del tren.
 
 - MP: trainCapacity/2.
 - MS: train_get_pcars/2,
@@ -552,7 +552,7 @@ trainCapacity(Train, Capacity) :-
 /*
 Req 15: TDA driver - Constructor.
  
-- Descripcion =  Predicado que permite crear un conductor cuya habilitación de conducción 
+- Descripcion = Predicado que permite crear un conductor cuya habilitación de conducción 
                  depende del fabricante de tren (train-maker).
 
 - MP: driver/4.
@@ -587,7 +587,7 @@ subway_get_drivers(Subway, Drivers) :-
 /*
 Req 16: TDA subway - Constructor.
  
-- Descripcion =  Predicado que permite crear una red de metro.
+- Descripcion = Predicado que permite crear una red de metro.
 
 - MP: subway/3.
 - MS: subway/6
@@ -637,7 +637,7 @@ verification_trains(TrainList) :-
 /*
 Req 17: TDA subway - Modificador.
  
-- Descripcion =  Predicado que permite añadir trenes a una red de metro.
+- Descripcion = Predicado que permite añadir trenes a una red de metro.
 
 - MP: subwayAddTrain/3.
 - MS: foreach/2,
@@ -672,7 +672,7 @@ verification_lines(LineList) :-
 /*
 Req 18: TDA subway - Modificador.
  
-- Descripcion =  Predicado que permite añadir líneas a una red de metro.
+- Descripcion = Predicado que permite añadir líneas a una red de metro.
 
 - MP: subwayAddLine/3.
 - MS: foreach/2,
@@ -697,7 +697,7 @@ subwayAddLine(Subway, LinesIn, NewSubway) :-
 
 %-----------------------------------------------------------------------------------------------
 
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAddLine.    
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAddDriver.    
 
 % Verifica que drivers no esten repetidos
 verification_driver(DriverList) :-
@@ -707,7 +707,7 @@ verification_driver(DriverList) :-
 /*
 Req 19: TDA subway - Modificador.
  
-- Descripcion =  Predicado que permite añadir conductores a una red de metro.
+- Descripcion = Predicado que permite añadir conductores a una red de metro.
 
 - MP: subwayAddDriver/3.
 - MS: 
@@ -722,10 +722,37 @@ subwayAddDriver(Subway, DriversIn, NewSubway) :-
     append(OldDrivers, DriversIn, NewDrivers),
     verification_driver(NewDrivers),
     subway(Id, Name, Lines, Trains, NewDrivers, NewSubway), !.
-    
-    
-    
-    
-    
-    
+  
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayToString.    
+
+% Aplana una lista 
+flatten_list([], []).
+
+flatten_list([First|Tail], FlatList) :-
+    flatten_list(First, FlatHead),
+    flatten_list(Tail, FlatTail),
+    append(FlatHead, FlatTail, FlatList).
+
+flatten_list(Element, [Element]) :-
+    not(is_list(Element)).
+
+/*
+Req 20: TDA subway - Otras funciones.
+ 
+- Descripcion = Predicado que permite añadir conductores a una red de metro.
+
+- MP: subwayToString/2.
+- MS: flatten_list/2,
+      maplist/3,
+      atomic_list_concat/3.
+*/     
+
+subwayToString(List, Result) :-
+    flatten_list(List, FlatList),
+    maplist(atom_string, FlatList, StringList),
+    atomic_list_concat(StringList, ' ', Result).
+
+
     
