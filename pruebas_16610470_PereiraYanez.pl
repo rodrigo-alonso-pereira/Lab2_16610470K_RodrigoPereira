@@ -175,7 +175,12 @@ subwayAddDriver(SW5, [D4, D5], SW7), %True
 
 % pasando subway a string
 subwayToString(SW6_1, StringSW6_1),
-subwayToString(SW7, StringSW7).
+subwayToString(SW7, StringSW7),
+
+% cambiando tiempo de parada de una estacion
+subwaySetStationStoptime(SW6_1, "Los Héroes", 90, SW8),
+subwaySetStationStoptime(SW8, "El Parron", 25, SW8_1),
+subwaySetStationStoptime(SW8_1, "Franklin", 50, SW8_2).
 
 
 */ 
