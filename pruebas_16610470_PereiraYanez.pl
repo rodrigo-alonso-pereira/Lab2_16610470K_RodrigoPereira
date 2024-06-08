@@ -180,7 +180,12 @@ subwayToString(SW7, StringSW7),
 % cambiando tiempo de parada de una estacion
 subwaySetStationStoptime(SW6_1, "Los Héroes", 90, SW8),
 subwaySetStationStoptime(SW8, "El Parron", 25, SW8_1),
-subwaySetStationStoptime(SW8_1, "Franklin", 50, SW8_2).
+subwaySetStationStoptime(SW8_1, "Franklin", 50, SW8_2),
+subwaySetStationStoptime(SW0, "Franklin", 50, SW0_1), %Subway vacio, retorna subway original
+
+% asignar tren a linea
+subwayAssignTrainToLine(SW8_2, 1, 1, SW9),
+subwayAssignTrainToLine(SW9, 2, 2, SW9_1).
 
 
 */ 
