@@ -887,9 +887,10 @@ subwayAssignTrainToLine(Subway, TrainId, LineId, NewSubway) :-
     subway_get_lines(Subway, Lines),
     subway_get_trains(Subway, Trains),
     subway_get_drivers(Subway, Drivers),
-    subway_get_assign(Subway, Assign),
-    ,
-    subway(Id, Name, NewLines, Trains, Drivers, Assign, NewSubway), !.
+    subway_get_assign(Subway, Assigns),
+    assign(LineId, TrainId, [], NewAssign),
+    append(Assigns, [NewAssign], NewAssigns),
+    subway(Id, Name, Lines, Trains, Drivers, NewAssigns, NewSubway), !.
     
     
     
