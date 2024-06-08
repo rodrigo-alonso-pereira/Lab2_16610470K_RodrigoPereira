@@ -573,20 +573,58 @@ driver_get_id(Driver, Id) :-
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subway.
 
+% Constructor de DriverData
+driver_data(IdDriver, IdTrain, DepartureTime, DepartureStation, [IdDriver, IdTrain, DepartureTime, DepartureStation]).
+
+% Obtiene IdDriver de driver_data
+driver_data_get_id_driver(DriverData, IdDriver) :-
+    driver_data(IdDriver, _, _, _, DriverData).
+
+% Obtiene IdDriver de driver_data
+driver_data_get_id_train(DriverData, IdTrain) :-
+    driver_data(_, IdTrain, _, _, DriverData).
+
+% Obtiene IdDriver de driver_data
+driver_data_get_departure_time(DriverData, DepartureTime) :-
+    driver_data(_, _, DepartureTime, _, DriverData).
+
+% Obtiene IdDriver de driver_data
+driver_data_get_departure_station(DriverData, DepartureStation) :-
+    driver_data(_, _, _, DepartureStation, DriverData).
+
+% Constructor de Assign
+assign(IdLine, IdTrain, DriverData, [IdLine, IdTrain, DriverData]).
+
+% Obtiene IdLine de assign
+assign_get_id_line(Assign, IdLine) :-
+    assign(IdLine, _, _, Assign).
+
+% Obtiene IdTrain de assign
+assign_get_id_train(Assign, IdTrain) :-
+    assign(_, IdTrain, _, Assign).
+
+% Obtiene DriverData de assign
+assign_get_driver_data(Assign, DriverData) :-
+    assign(_, _, DriverData, Assign).
+
 % Constructor de subway
-subway(Id, Name, Lines, Trains, Drivers, [Id, Name, Lines, Trains, Drivers]).
+subway(Id, Name, Lines, Trains, Drivers, Assign, [Id, Name, Lines, Trains, Drivers, Assign]).
 
 % Obtiene Lines de subway
 subway_get_lines(Subway, Lines) :-
-    subway(_, _, Lines, _, _, Subway).
+    subway(_, _, Lines, _, _, _, Subway).
 
 % Obtiene Trains de subway
 subway_get_trains(Subway, Trains) :-
-    subway(_, _, _, Trains, _, Subway).
+    subway(_, _, _, Trains, _, _, Subway).
 
 % Obtiene Drivers de subway
 subway_get_drivers(Subway, Drivers) :-
-    subway(_, _, _, _, Drivers, Subway).
+    subway(_, _, _, _, Drivers, _, Subway).
+
+% Obtiene Assign de subway
+subway_get_assign(Subway, Assign) :-
+    subway(_, _, _, _, _, Assign, Subway).
 
 
 /*
@@ -599,17 +637,17 @@ Req 16: TDA subway - Constructor.
 */   
     
 subway(Id, Name, Subway) :-
-    subway(Id, Name, [], [], [], Subway).
+    subway(Id, Name, [], [], [], [], Subway).
 
 % GET DE TDA subway
 
 % Obtiene Id de subway
 subway_get_id(Subway, Id) :-
-    subway(Id, _, _, _, _, Subway).
+    subway(Id, _, _, _, _,  _, Subway).
 
 % Obtiene Name de subway
 subway_get_name(Subway, Name) :-
-    subway(_, Name, _, _, _, Subway).
+    subway(_, Name, _, _, _,  _, Subway).
 
 %-----------------------------------------------------------------------------------------------
 
@@ -661,9 +699,10 @@ subwayAddTrain(Subway, TrainsIn, NewSubway) :-
     subway_get_lines(Subway, Lines),
     subway_get_trains(Subway, OldTrains),
     subway_get_drivers(Subway, Drivers),
+    subway_get_assign(Subway, Assign),
     append(OldTrains, TrainsIn, NewTrains),
     verification_trains(NewTrains),
-    subway(Id, Name, Lines, NewTrains, Drivers, NewSubway), !.
+    subway(Id, Name, Lines, NewTrains, Drivers, Assign, NewSubway), !.
 
 %-----------------------------------------------------------------------------------------------
 
@@ -696,9 +735,10 @@ subwayAddLine(Subway, LinesIn, NewSubway) :-
     subway_get_lines(Subway, OldLines),
     subway_get_trains(Subway, Trains),
     subway_get_drivers(Subway, Drivers),
+    subway_get_assign(Subway, Assign),
     append(OldLines, LinesIn, NewLines),
     verification_lines(NewLines),
-    subway(Id, Name, NewLines, Trains, Drivers, NewSubway), !.
+    subway(Id, Name, NewLines, Trains, Drivers, Assign, NewSubway), !.
 
 %-----------------------------------------------------------------------------------------------
 
@@ -724,9 +764,10 @@ subwayAddDriver(Subway, DriversIn, NewSubway) :-
     subway_get_lines(Subway, Lines),
     subway_get_trains(Subway, Trains),
     subway_get_drivers(Subway, OldDrivers),
+    subway_get_assign(Subway, Assign),
     append(OldDrivers, DriversIn, NewDrivers),
     verification_driver(NewDrivers),
-    subway(Id, Name, Lines, Trains, NewDrivers, NewSubway), !.
+    subway(Id, Name, Lines, Trains, NewDrivers, Assign, NewSubway), !.
   
 %-----------------------------------------------------------------------------------------------
 
@@ -761,7 +802,7 @@ subwayToString(List, Result) :-
   
 %-----------------------------------------------------------------------------------------------
 
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayToString.   
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwaySetStationStoptime.   
 
 % Modifica StopTime de station
 station_set_stop_time(Station, StationName, Time, NewStation) :-
@@ -807,7 +848,7 @@ Req 21: TDA subway - Modificador.
  
 - Descripcion = Predicado que permite modificar el tiempo de parada de una estación.
 
-- MP: subwayToString/4.
+- MP: subwaySetStationStoptime/4.
 - MS: subway_get_id/2,
       subway_get_name/2,
       subway_get_lines/2,
@@ -823,12 +864,32 @@ subwaySetStationStoptime(Subway, StationName, Time, NewSubway) :-
     subway_get_lines(Subway, Lines),
     subway_get_trains(Subway, Trains),
     subway_get_drivers(Subway, Drivers),
+    subway_get_assign(Subway, Assign),
     lines_set_stop_time(Lines, StationName, Time, NewLines),
-    subway(Id, Name, NewLines, Trains, Drivers, NewSubway), !.
+    subway(Id, Name, NewLines, Trains, Drivers, Assign, NewSubway), !.
+  
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayToString.   
+   
+/*
+Req 22: TDA subway - Modificador.
+ 
+- Descripcion = Predicado que permite modificar el tiempo de parada de una estación.
+
+- MP: subwayAssignTrainToLine/4.
+- MS: 
+*/    
     
-    
-    
-    
+subwayAssignTrainToLine(Subway, TrainId, LineId, NewSubway) :-
+    subway_get_id(Subway, Id),
+    subway_get_name(Subway, Name),
+    subway_get_lines(Subway, Lines),
+    subway_get_trains(Subway, Trains),
+    subway_get_drivers(Subway, Drivers),
+    subway_get_assign(Subway, Assign),
+    ,
+    subway(Id, Name, NewLines, Trains, Drivers, Assign, NewSubway), !.
     
     
     
