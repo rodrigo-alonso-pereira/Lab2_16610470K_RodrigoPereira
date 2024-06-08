@@ -173,6 +173,10 @@ subwayAddDriver(SW6, [D1, D2, D3], SW6_1), %True
 subwayAddDriver(SW5, [D4, D5], SW7), %True
 %subwayAddDriver(SW6_1, [D0], SW6_2). %False, pq D0 ya esta agregado a SW6_1
 
+% pasando subway a string
+subwayToString(SW6_1, StringSW6_1),
+subwayToString(SW7, StringSW7).
+
 
 */ 
 
