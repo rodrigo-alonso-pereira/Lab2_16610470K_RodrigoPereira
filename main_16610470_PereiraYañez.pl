@@ -16,17 +16,21 @@ Req 2: TDA station - constructor
 */
 station(Id, Name, Type, StopTime, [Id, Name, Type, StopTime]).
 
-% Obtiene id de Station
+% Obtiene Id de Station
 station_get_id(Station, Id) :-
     station(Id, _, _, _, Station).
 
-% Obtiene name de Station
+% Obtiene Name de Station
 station_get_name(Station, Name) :-
     station(_, Name, _, _, Station).
 
-% Obtiene type de Station
+% Obtiene Type de Station
 station_get_type(Station, Type) :-
     station(_, _, Type, _, Station).
+
+% Obtiene StopTime de Station
+station_get_stop_time(Station, StopTime) :-
+    station(_, _, _, StopTime, Station).
 
 
 %-----------------------------------------------------------------------------------------------
@@ -38,19 +42,19 @@ Req 3: TDA section - constructor.
 */
 section(Point1, Point2, Distance, Cost, [Point1, Point2, Distance, Cost]).
 
-% Obtiene Point1 de una seccion
+% Obtiene Point1 de Section
 section_get_point1(Section, Point1) :-
     section(Point1, _, _, _, Section).
 
-% Obtiene Point2 de una seccion
+% Obtiene Point2 de Section
 section_get_point2(Section, Point2) :-
     section(_, Point2, _, _, Section).
 
-% Obtiene Distance de una seccion
+% Obtiene Distance de Section
 section_get_distance(Section, Distance) :-
     section(_, _, Distance, _, Section).
 
-% Obtiene Cost de una seccion
+% Obtiene Cost de Section
 section_get_cost(Section, Cost) :-
     section(_, _, _, Cost, Section).
 
@@ -105,6 +109,7 @@ Req 5: TDA line - Otros predicados.
 % Imprimir elementos por consola
 print_element(Element) :-
     write(Element), 
+    nl,
     nl.
 
 % Evalua si existe elemento en lista
@@ -739,9 +744,9 @@ flatten_list(Element, [Element]) :-
     not(is_list(Element)).
 
 /*
-Req 20: TDA subway - Otras funciones.
+Req 20: TDA subway - Otros predicados.
  
-- Descripcion = Predicado que permite añadir conductores a una red de metro.
+- Descripcion = Predicado que permite expresar una red de metro en un formato String.
 
 - MP: subwayToString/2.
 - MS: flatten_list/2,
@@ -753,6 +758,77 @@ subwayToString(List, Result) :-
     flatten_list(List, FlatList),
     maplist(atom_string, FlatList, StringList),
     atomic_list_concat(StringList, ' ', Result).
+  
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayToString.   
+
+% Modifica StopTime de station
+station_set_stop_time(Station, StationName, Time, NewStation) :-
+	station_get_id(Station, Id),
+	station_get_name(Station, Name),
+	station_get_type(Station, Type),
+	station_get_stop_time(Station, StopTime),
+    (Name == StationName ->  
+    	station(Id, Name, Type, Time, NewStation)
+    ;   
+    	station(Id, Name, Type, StopTime, NewStation)).
 
 
+% Recorre lista de secction para modificar c/station 
+section_set_stop_time([], _, _, []).
+
+section_set_stop_time([First|Tail], StationName, Time, NewSections) :-
+    section_get_distance(First, Distance),
+	section_get_cost(First, Cost),
+    section_get_point1(First, Station1),
+    section_get_point2(First, Station2),
+    station_set_stop_time(Station1, StationName, Time, NewStation1),
+    station_set_stop_time(Station2, StationName, Time, NewStation2),
+    section(NewStation1, NewStation2, Distance, Cost, NewSection),
+	section_set_stop_time(Tail, StationName, Time, Acc),
+	append([NewSection], Acc, NewSections).
+    
+% Recorre lista de lines para modificar c/section
+lines_set_stop_time([], _, _, []).
+
+lines_set_stop_time([First|Tail], StationName, Time, NewLines) :-
+	line_get_id(First, Id),
+	line_get_name(First, Name),
+	line_get_railType(First, RailType),
+    line_get_sections(First, Sections),
+    section_set_stop_time(Sections, StationName, Time, NewSections),
+    line(Id, Name, RailType, NewSections, NewLine),
+    lines_set_stop_time(Tail, StationName, Time, Acc),
+    append([NewLine], Acc, NewLines).
+
+/*
+Req 21: TDA subway - Modificador.
+ 
+- Descripcion = Predicado que permite modificar el tiempo de parada de una estación.
+
+- MP: subwayToString/4.
+- MS: subway_get_id/2,
+      subway_get_name/2,
+      subway_get_lines/2,
+      subway_get_trains/2,
+      subway_get_drivers/2,
+      lines_set_stop_time/4,
+      subway/6, !.
+*/  
+
+subwaySetStationStoptime(Subway, StationName, Time, NewSubway) :-
+    subway_get_id(Subway, Id),
+    subway_get_name(Subway, Name),
+    subway_get_lines(Subway, Lines),
+    subway_get_trains(Subway, Trains),
+    subway_get_drivers(Subway, Drivers),
+    lines_set_stop_time(Lines, StationName, Time, NewLines),
+    subway(Id, Name, NewLines, Trains, Drivers, NewSubway), !.
+    
+    
+    
+    
+    
+    
     
