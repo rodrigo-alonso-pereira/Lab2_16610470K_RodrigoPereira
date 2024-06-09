@@ -184,12 +184,20 @@ subwaySetStationStoptime(SW8_1, "Franklin", 50, SW8_2),
 subwaySetStationStoptime(SW0, "Franklin", 50, SW0_1), %Subway vacio, retorna subway original
 
 % asignar tren a linea
-subwayAssignTrainToLine(SW8_2, 1, 1, SW9),
-subwayAssignTrainToLine(SW9, 2, 2, SW9_1),
-subwayAssignTrainToLine(SW7, 2, 6, SW10),
-subwayAssignTrainToLine(SW10, 1, 2, SW10_1),
+subwayAssignTrainToLine(SW8_2, 1, 1, SW9), %True
+subwayAssignTrainToLine(SW9, 2, 2, SW9_1), %True
+subwayAssignTrainToLine(SW7, 2, 6, SW10), %True
+subwayAssignTrainToLine(SW10, 1, 2, SW10_1), %True
 %subwayAssignTrainToLine(SW9_1, 2, 3, SW9_2). %False pq no existe line 3 en SW9_1
 %subwayAssignTrainToLine(SW9_1, 3, 1, SW9_2). %False pq no existe train 3 en SW9_1
+
+% asignar driver a tren
+subwayAssignDriverToTrain(SW9_1, 0, 1, "10:30:00", "Los Heroes", "San Pablo", SW11), %True
+subwayAssignDriverToTrain(SW11, 1, 2, "10:00:00", "La Cisterna", "Ciudad del Niño", SW11_1), %True
+subwayAssignDriverToTrain(SW10_1, 4, 1, "16:00:00", "El Parron", "Ciudad del Niño", SW12), %True
+subwayAssignDriverToTrain(SW12, 5, 2, "21:00:00", "Cerrillos", "Franklin", SW12_1), %True
+%subwayAssignDriverToTrain(SW11_1, 4, 2, "12:00:00", "Cerrillos", "Franklin", SW13). %False pq Driver no existe en subway
+%subwayAssignDriverToTrain(SW12_1, 5, 3, "06:30:00", "La Cisterna", "Ciudad del Niño", SW14). %False pq Line no existe en subway
 
 
 
