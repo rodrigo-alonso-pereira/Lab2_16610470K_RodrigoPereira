@@ -6,8 +6,8 @@ type(Name, [Name]).
 type_get_name(Type, Name) :-
     type(Name,Type).
 
-
 %-----------------------------------------------------------------------------------------------
+
 /*
 Req 2: TDA station - constructor
 
@@ -32,8 +32,8 @@ station_get_type(Station, Type) :-
 station_get_stop_time(Station, StopTime) :-
     station(_, _, _, StopTime, Station).
 
-
 %-----------------------------------------------------------------------------------------------
+
 /*
 Req 3: TDA section - constructor.
  
@@ -58,8 +58,8 @@ section_get_distance(Section, Distance) :-
 section_get_cost(Section, Cost) :-
     section(_, _, _, Cost, Section).
 
-
 %-----------------------------------------------------------------------------------------------
+
 /*
 Req 4: TDA line - constructor.
  
@@ -84,27 +84,9 @@ line_get_railType(Line, RailType) :-
 line_get_sections(Line, Sections) :-
     line(_, _, _, Sections, Line).
 
-
 %-----------------------------------------------------------------------------------------------
-/*
-Req 5: TDA line - Otros predicados.
- 
-- Descripcion = Predicado que permite determinar el largo total de una línea 
-                (cantidad de estaciones), la distancia (en la unidad de medida expresada 
-                en cada tramo) y su costo.
-- MP: lineLength/4.
-- MS: line_get_sections/2,
-	  (ListSections = [] ->  
-    	Length = 0,
-        Distance = 0,
-        Cost = 0
-      ;
-      sum_element_list/3,
-	  sum_element_list/3,
-      new_name_station_list/2,
-      delete_duplicates/2,
-      length_list/2.
-*/
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO lineLength.    
 
 % Imprimir elementos por consola
 print_element(Element) :-
@@ -155,6 +137,26 @@ delete_duplicates([Head|Tail], [Head|NewList]) :-
     not(belongs(Head, Tail)),
     delete_duplicates(Tail, NewList).
 
+/*
+Req 5: TDA line - Otros predicados.
+ 
+- Descripcion = Predicado que permite determinar el largo total de una línea 
+                (cantidad de estaciones), la distancia (en la unidad de medida expresada 
+                en cada tramo) y su costo.
+- MP: lineLength/4.
+- MS: line_get_sections/2,
+	  (ListSections = [] ->  
+    	Length = 0,
+        Distance = 0,
+        Cost = 0
+      ;
+      sum_element_list/3,
+	  sum_element_list/3,
+      new_name_station_list/2,
+      delete_duplicates/2,
+      length_list/2.
+*/
+
 lineLength(Line, Length, Distance, Cost) :-
     line_get_sections(Line, ListSections),
     (ListSections = [] ->  
@@ -168,8 +170,28 @@ lineLength(Line, Length, Distance, Cost) :-
     	delete_duplicates(ListStation, ListStationClean),
     	length_list(ListStationClean, Length)).
     
-
 %-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO lineSectionLength.   
+
+% Filtrar lista de secciones segun estacion de inicio y fin
+filter_section_list([], _, _, _, []).
+
+filter_section_list([Section|Tail], StationStart, StationEnd, Flag, FilterSectionList) :-
+    section_get_point1(Section, Station1),
+    section_get_point2(Section, Station2),
+    station_get_name(Station1, Name1),
+    station_get_name(Station2, Name2),
+    ((Name1 == StationStart ; Flag == 'True') ->  
+    	NewFlag = 'True',
+        append([Section], Acc, FilterSectionList),
+        ((Name1 == StationEnd ; Name2 == StationEnd) ->  
+        	filter_section_list(Tail, StationStart, StationEnd, 'False', Acc)
+        ;
+        	filter_section_list(Tail, StationStart, StationEnd, NewFlag, Acc))
+    ;
+    	filter_section_list(Tail, StationStart, StationEnd, Flag, FilterSectionList)).
+
 /*
 Req 6: TDA line - otras funciones.
  
@@ -190,24 +212,6 @@ Req 6: TDA line - otras funciones.
     ;
     	filter_section_list/5).
 */
-
-% Filtrar lista de secciones segun estacion de inicio y fin
-filter_section_list([], _, _, _, []).
-
-filter_section_list([Section|Tail], StationStart, StationEnd, Flag, FilterSectionList) :-
-    section_get_point1(Section, Station1),
-    section_get_point2(Section, Station2),
-    station_get_name(Station1, Name1),
-    station_get_name(Station2, Name2),
-    ((Name1 == StationStart ; Flag == 'True') ->  
-    	NewFlag = 'True',
-        append([Section], Acc, FilterSectionList),
-        ((Name1 == StationEnd ; Name2 == StationEnd) ->  
-        	filter_section_list(Tail, StationStart, StationEnd, 'False', Acc)
-        ;
-        	filter_section_list(Tail, StationStart, StationEnd, NewFlag, Acc))
-    ;
-    	filter_section_list(Tail, StationStart, StationEnd, Flag, FilterSectionList)).
     
 lineSectionLength(Line, StationStart, StationEnd, Sections, Distance, Cost) :-
     line_get_sections(Line, SectionList),
@@ -215,8 +219,8 @@ lineSectionLength(Line, StationStart, StationEnd, Sections, Distance, Cost) :-
     sum_element_list(Sections, Distance, section_get_distance),
     sum_element_list(Sections, Cost, section_get_cost).
 
-
 %-----------------------------------------------------------------------------------------------
+
 /*
 Req 7: TDA line - modificador.
  
@@ -240,25 +244,9 @@ lineAddSection(Line, Section, NewLine) :-
     append(SectionList, [Section], NewSectionList),
     line(Id, Name, RailType, NewSectionList, NewLine).
 
-
 %-----------------------------------------------------------------------------------------------
-/*
-Req 8: TDA line - modificador.
- 
-- Descripcion = Predicado que permite determinar si un elemento cumple con las restricciones 
-                señaladas en apartados anteriores en relación a las estaciones y tramos para 
-                poder conformar una línea.
-- MP: isLine/1.
-- MS: line_get_sections/2,
-      is_empty_line/1,
-      partial_station_list/2,
-      last/2,
-      section_get_point2/2,
-      append(ParcialStationList, [LastStation], StationList),
-      is_station/1,
-      is_terminal/1,
-      is_section_communicates/1.
-*/    
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO isLine.  
 
 % Crear sublista con estaciones iniciales de cada seccion de una linea
 partial_station_list([], []).
@@ -337,6 +325,24 @@ is_section_communicates(SectionList) :-
     full_station_list(SectionList, StationList),
     check_pair_station(StationList).
 
+/*
+Req 8: TDA line - modificador.
+ 
+- Descripcion = Predicado que permite determinar si un elemento cumple con las restricciones 
+                señaladas en apartados anteriores en relación a las estaciones y tramos para 
+                poder conformar una línea.
+- MP: isLine/1.
+- MS: line_get_sections/2,
+      is_empty_line/1,
+      partial_station_list/2,
+      last/2,
+      section_get_point2/2,
+      append(ParcialStationList, [LastStation], StationList),
+      is_station/1,
+      is_terminal/1,
+      is_section_communicates/1.
+*/    
+
 isLine(Line) :-
     line_get_sections(Line, SectionList),
     not(is_empty(SectionList)), !, %Verifica que line no este vacia
@@ -385,9 +391,9 @@ pcar_get_model(Pcar, Model) :-
 pcar_get_type(Pcar, Type) :-
     pcar(_, _, _, Type, Pcar).
 
-
 %-----------------------------------------------------------------------------------------------
-/*
+
+ * /*
 Req 10: TDA train - Constructor.
  
 - Descripcion = Predicado que permite crear un tren o convoy.
@@ -498,7 +504,7 @@ trainRemoveCar(Train, Position, NewTrain) :-
     remove_element_list(PcarList, Position, NewPcarList),
     train(Id, Maker, RailType, Speed, NewPcarList, NewTrain).
 
- %-----------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO isTrain. 
 
@@ -1095,9 +1101,7 @@ whereIsTrain(Subway, TrainId, Time, StationName) :-
     ;	
     	station_get_name(Station, StationName)).
   
-%-----------------------------------------------------------------------------------------------
-
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAssignDriverToTrain.     
+%-----------------------------------------------------------------------------------------------    
 
 /*
 Req 25: TDA subway - Otros predicados.
