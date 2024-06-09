@@ -1006,7 +1006,7 @@ subwayAssignDriverToTrain(Subway, DriverId, TrainId, DepartureTime, DepartureSta
   
 %-----------------------------------------------------------------------------------------------
 
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAssignDriverToTrain.       
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO whereIsTrain.       
 
 % Transformar la velocidad de km/hr a m/s
 speed_to_ms(SpeedTrain, SpeedTrainMs) :-
@@ -1094,9 +1094,49 @@ whereIsTrain(Subway, TrainId, Time, StationName) :-
     	StationName = ArrivalStation
     ;	
     	station_get_name(Station, StationName)).
+  
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAssignDriverToTrain.     
+
+/*
+Req 25: TDA subway - Otros predicados.
+ 
+- Descripcion = Predicado que permite ir armando el recorrido del tren a partir de una hora especificada.
+
+- MP: subwayTrainPath/4.
+- MS: whereIsTrain/3,
+      subway_get_lines/2,
+      subway_get_assign/2,
+      find_item/4,
+      assign_get_id_line/2,
+      find_item/4,
+      line_get_sections/2,
+      assign_get_driver_data/2,
+	  driver_data_get_arrival_station/2,
+      filter_section_list/5,
+      partial_station_list/2,
+      last/2,
+      section_get_point2/2,
+      append(ParcialStationList, [LastStation], StationList),
+      get_element_from_list_tda/3.
+*/  
+
+subwayTrainPath(Subway, TrainId, Time, NameStationList) :-
+    whereIsTrain(Subway, TrainId, Time, StationStart),
+    subway_get_lines(Subway, Lines),
+    subway_get_assign(Subway, Assigns),
+    find_item(Assigns, TrainId, assign_get_id_train, Assign),
+    assign_get_id_line(Assign, IdLine),
+    find_item(Lines, IdLine, line_get_id, Line),
+    line_get_sections(Line, Sections),
+    assign_get_driver_data(Assign, DriverData),
+	driver_data_get_arrival_station(DriverData, ArrivalStation),
+    filter_section_list(Sections, StationStart, ArrivalStation, 'False', FilterSectionList),
+    partial_station_list(FilterSectionList, ParcialStationList),
+    last(FilterSectionList, LastSection),
+    section_get_point2(LastSection, LastStation),
+    append(ParcialStationList, [LastStation], StationList),
+    get_element_from_list_tda(StationList, station_get_name, NameStationList).
     
-
-
-
-
 
