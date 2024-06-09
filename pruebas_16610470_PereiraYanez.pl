@@ -195,11 +195,13 @@ subwayAssignTrainToLine(SW10, 1, 2, SW10_1), %True
 subwayAssignDriverToTrain(SW9_1, 0, 1, "10:30:00", "Los Heroes", "San Pablo", SW11), %True
 subwayAssignDriverToTrain(SW11, 1, 2, "10:00:00", "La Cisterna", "Ciudad del Niño", SW11_1), %True
 subwayAssignDriverToTrain(SW10_1, 4, 1, "16:00:00", "El Parron", "Ciudad del Niño", SW12), %True
+%subwayAssignDriverToTrain(SW12, 4, 2, "21:00:00", "Cerrillos", "Franklin", SW12_1), %False pq Driver no puede manejar este tipo de tren 
 subwayAssignDriverToTrain(SW12, 5, 2, "21:00:00", "Cerrillos", "Franklin", SW12_1), %True
 %subwayAssignDriverToTrain(SW11_1, 4, 2, "12:00:00", "Cerrillos", "Franklin", SW13). %False pq Driver no existe en subway
 %subwayAssignDriverToTrain(SW12_1, 5, 3, "06:30:00", "La Cisterna", "Ciudad del Niño", SW14). %False pq Line no existe en subway
 
-
+% buscando donde esta el tren
+whereIsTrain(SW11_1, 1, "11:00:00", ImHere).
 
 */ 
 
