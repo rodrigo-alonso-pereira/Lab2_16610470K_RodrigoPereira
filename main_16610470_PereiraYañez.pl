@@ -633,7 +633,7 @@ Req 16: TDA subway - Constructor.
 - Descripcion = Predicado que permite crear una red de metro.
 
 - MP: subway/3.
-- MS: subway/6
+- MS: subway/7
 */   
     
 subway(Id, Name, Subway) :-
@@ -686,10 +686,13 @@ Req 17: TDA subway - Modificador.
 - MS: foreach/2,
       subway_get_id/2,
       subway_get_name/2,
-      subway/6,
-      append/3,
+      subway_get_lines/2,
+      subway_get_trains/2,
+      subway_get_drivers/2,
+      subway_get_assign/2,
+      append(OldTrains, TrainsIn, NewTrains),
       verification_trains/1,
-      subway/6.
+      subway/7, !.
 */      
 
 subwayAddTrain(Subway, TrainsIn, NewSubway) :-
@@ -722,10 +725,13 @@ Req 18: TDA subway - Modificador.
 - MS: foreach/2,
       subway_get_id/2,
       subway_get_name/2,
-      subway/6,
-      append/3,
+      subway_get_lines/2,
+      subway_get_trains/2,
+      subway_get_drivers/2,
+      subway_get_assign/2,
+      append(OldLines, LinesIn, NewLines),
       verification_lines/1,
-      subway/6.
+      subway/7, !.
 */       
 
 subwayAddLine(Subway, LinesIn, NewSubway) :-
@@ -755,7 +761,15 @@ Req 19: TDA subway - Modificador.
 - Descripcion = Predicado que permite añadir conductores a una red de metro.
 
 - MP: subwayAddDriver/3.
-- MS: 
+- MS: subway_get_id/2,
+      subway_get_name/2,
+      subway_get_lines/2,
+      subway_get_trains/2,
+      subway_get_drivers/2,
+      subway_get_assign/2,
+      append(OldDrivers, DriversIn, NewDrivers),
+      verification_driver/1,
+      subway/7, !.
 */       
   
 subwayAddDriver(Subway, DriversIn, NewSubway) :-
@@ -854,8 +868,9 @@ Req 21: TDA subway - Modificador.
       subway_get_lines/2,
       subway_get_trains/2,
       subway_get_drivers/2,
+      subway_get_assign/2,
       lines_set_stop_time/4,
-      subway/6, !.
+      subway/7, !.
 */  
 
 subwaySetStationStoptime(Subway, StationName, Time, NewSubway) :-
@@ -871,6 +886,11 @@ subwaySetStationStoptime(Subway, StationName, Time, NewSubway) :-
 %-----------------------------------------------------------------------------------------------
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayToString.   
+
+% Evalua si lista con TDA's tiene un elemento en particular
+exist_element(List, Element, Predicate) :-
+    get_element_from_list_tda(List, Predicate, ListElement),
+    belongs(Element, ListElement).
    
 /*
 Req 22: TDA subway - Modificador.
@@ -878,7 +898,17 @@ Req 22: TDA subway - Modificador.
 - Descripcion = Predicado que permite modificar el tiempo de parada de una estación.
 
 - MP: subwayAssignTrainToLine/4.
-- MS: 
+- MS: subway_get_id/2,
+      subway_get_name/2,
+      subway_get_lines/2,
+      subway_get_trains/2,
+      subway_get_drivers/2,
+      subway_get_assign/2,
+      assign/4,
+      append(Assigns, [NewAssign], NewAssigns),
+      exist_element/3,
+      exist_element/3,
+      subway/7, !.
 */    
     
 subwayAssignTrainToLine(Subway, TrainId, LineId, NewSubway) :-
@@ -890,6 +920,8 @@ subwayAssignTrainToLine(Subway, TrainId, LineId, NewSubway) :-
     subway_get_assign(Subway, Assigns),
     assign(LineId, TrainId, [], NewAssign),
     append(Assigns, [NewAssign], NewAssigns),
+    exist_element(Trains, TrainId, train_get_id),
+    exist_element(Lines, LineId, line_get_id),
     subway(Id, Name, Lines, Trains, Drivers, NewAssigns, NewSubway), !.
     
     
