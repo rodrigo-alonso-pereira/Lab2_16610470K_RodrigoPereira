@@ -199,14 +199,18 @@ subwayAssignDriverToTrain(SW10_1, 4, 1, "16:00:00", "El Parron", "Ciudad del Ni�
 subwayAssignDriverToTrain(SW12, 5, 2, "21:00:00", "Cerrillos", "Franklin", SW12_1), %True
 %subwayAssignDriverToTrain(SW11_1, 4, 2, "12:00:00", "Cerrillos", "Franklin", SW13). %False pq Driver no existe en subway
 %subwayAssignDriverToTrain(SW12_1, 5, 3, "06:30:00", "La Cisterna", "Ciudad del Niño", SW14). %False pq Line no existe en subway
-% buscando donde esta el tren
 
-whereIsTrain(SW11_1, 1, "10:45:00", IamHere), %Republica
+% buscando donde esta el tren
+whereIsTrain(SW11_1, 1, "10:45:00", IamHere1), %Republica
 whereIsTrain(SW11_1, 1, "11:00:00", IamHere2), %Santa Lucia pq a la hora consultada ya habia llegado a la estacion final.
 whereIsTrain(SW12_1, 1, "16:05:00", IamHere3), %Lo Ovalle
-whereIsTrain(SW12_1, 2, "21:08:00", IamHere4). %Pedro Aguirre Cerda
+whereIsTrain(SW12_1, 2, "21:08:00", IamHere4), %Pedro Aguirre Cerda
 
-
+% determinando el recorrido futuro del tren
+subwayTrainPath(SW11_1, 1, "10:45:00", LS1), %["República", "Los Héroes", "La Moneda", "U. de Chile", "Santa Lucia"]
+%subwayTrainPath(SW11_1, 1, "11:00:00", LS2), %False pq ya llego al final y no quedan estaciones por recorrer
+subwayTrainPath(SW12_1, 1, "16:05:00", LS3), %["Lo Ovalle", "Ciudad del Niño"]
+subwayTrainPath(SW12_1, 2, "21:08:00", LS4). %["Pedro Aguirre Cerda", "Franklin"]
 
 */ 
 
