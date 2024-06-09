@@ -185,7 +185,12 @@ subwaySetStationStoptime(SW0, "Franklin", 50, SW0_1), %Subway vacio, retorna sub
 
 % asignar tren a linea
 subwayAssignTrainToLine(SW8_2, 1, 1, SW9),
-subwayAssignTrainToLine(SW9, 2, 2, SW9_1).
+subwayAssignTrainToLine(SW9, 2, 2, SW9_1),
+subwayAssignTrainToLine(SW7, 2, 6, SW10),
+subwayAssignTrainToLine(SW10, 1, 2, SW10_1),
+%subwayAssignTrainToLine(SW9_1, 2, 3, SW9_2). %False pq no existe line 3 en SW9_1
+%subwayAssignTrainToLine(SW9_1, 3, 1, SW9_2). %False pq no existe train 3 en SW9_1
+
 
 
 */ 
