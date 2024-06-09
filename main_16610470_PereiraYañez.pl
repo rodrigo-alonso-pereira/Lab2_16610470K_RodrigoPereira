@@ -582,19 +582,19 @@ driver_data(IdDriver, DepartureTime, DepartureStation, ArrivalStation, [IdDriver
 
 % Obtiene IdDriver de driver_data
 driver_data_get_id_driver(DriverData, IdDriver) :-
-    driver_data(IdDriver, _, _, _, _, DriverData). 
+    driver_data(IdDriver, _, _, _, DriverData). 
 
 % Obtiene DepartureTime de driver_data
 driver_data_get_departure_time(DriverData, DepartureTime) :-
-    driver_data(_, _, DepartureTime, _, _, DriverData).
+    driver_data(_, DepartureTime, _, _, DriverData).
 
 % Obtiene DepartureStation de driver_data
 driver_data_get_departure_station(DriverData, DepartureStation) :-
-    driver_data(_, _, _, DepartureStation, _, DriverData).
+    driver_data(_, _, DepartureStation, _, DriverData).
 
 % Obtiene ArrivalStation de driver_data
 driver_data_get_arrival_station(DriverData, ArrivalStation) :-
-    driver_data(_, _, _, _, ArrivalStation, DriverData).
+    driver_data(_, _, _, ArrivalStation, DriverData).
 
 
 % Constructor de Assign
@@ -1008,16 +1008,92 @@ subwayAssignDriverToTrain(Subway, DriverId, TrainId, DepartureTime, DepartureSta
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAssignDriverToTrain.       
 
+% Transformar la velocidad de km/hr a m/s
+speed_to_ms(SpeedTrain, SpeedTrainMs) :-
+    SpeedTrainMs is SpeedTrain / 3.6.
+
+% Calcular diferencias de tiempos desde string
+total_time(Time1, Time2, TotalTime) :-
+    split_string(Time1, ":", "", Time1List),
+    split_string(Time2, ":", "", Time2List),
+    Time1List = [H1, M1, S1],
+    Time2List = [H2, M2, S2],
+    atom_number(H1, H1n),
+    atom_number(M1, M1n),
+    atom_number(S1, S1n),
+    atom_number(H2, H2n),
+    atom_number(M2, M2n),
+    atom_number(S2, S2n),
+    TotalTime is (((H2n*3600) + (M2n*60) + (S2n)) - ((H1n*3600) + (M1n*60) + (S1n))).
+	
+
+% Simula el avance del tren
+train_move([], _, _, []).
+
+train_move([First|Tail], TotalTime, SpeedTrainMs, Station) :-
+    section_get_distance(First, Distance),
+    section_get_point1(First, Station1),
+    section_get_point2(First, Station2),
+    station_get_stop_time(Station1, StopTime1),
+    station_get_stop_time(Station2, StopTime2),
+    TimeInSection is (((Distance * 1000) / SpeedTrainMs) + StopTime1 + StopTime2),
+    (TotalTime < TimeInSection ->  
+    	Station = Station1, !
+    ;   
+    	NewTotalTime is TotalTime - TimeInSection,
+    	train_move(Tail, NewTotalTime, SpeedTrainMs, Station)).
+
 /*
 Req 24: TDA subway - Otros predicados.
  
 - Descripcion = Predicado que permite determinar dónde está un tren a partir de una hora indicada del día.
 
-- MP: subwayAssignDriverToTrain/7.
-- MS: 
+- MP: whereIsTrain/4.
+- MS: subway_get_lines/2,
+      subway_get_assign/2,
+      subway_get_trains/2,
+      find_item/4,
+      assign_get_id_line/4,
+      find_item/4,
+      line_get_sections/4,
+      find_item/4,
+      train_get_speed/2,
+      speed_to_ms/2,
+      assign_get_driver_data/2,
+      driver_data_get_departure_time/2,
+	  driver_data_get_departure_station/2,
+	  driver_data_get_arrival_station/2,
+      filter_section_list/5,
+      total_time/5,
+      train_move/4,
+      (is_empty/1 ->  
+       	StationName = ArrivalStation
+      ;	
+    	station_get_name/2).
 */  
 
-%whereIsTrain(Subway, TrainId, TimeStart, Station) :-
+whereIsTrain(Subway, TrainId, Time, StationName) :-
+    subway_get_lines(Subway, Lines),
+    subway_get_assign(Subway, Assigns),
+    subway_get_trains(Subway, Trains),
+    find_item(Assigns, TrainId, assign_get_id_train, Assign),
+    assign_get_id_line(Assign, IdLine),
+    find_item(Lines, IdLine, line_get_id, Line),
+    line_get_sections(Line, Sections),
+    find_item(Trains, TrainId, train_get_id, Train),
+    train_get_speed(Train, SpeedTrain),
+    speed_to_ms(SpeedTrain, SpeedTrainMs),
+    assign_get_driver_data(Assign, DriverData),
+    driver_data_get_departure_time(DriverData, DepartureTime),
+	driver_data_get_departure_station(DriverData, DepartureStation),
+	driver_data_get_arrival_station(DriverData, ArrivalStation),
+    filter_section_list(Sections, DepartureStation, ArrivalStation, 'False', FilterSectionList),
+    total_time(DepartureTime, Time, TotalTime),
+    train_move(FilterSectionList, TotalTime, SpeedTrainMs, Station),
+    (is_empty(Station) ->  
+    	StationName = ArrivalStation
+    ;	
+    	station_get_name(Station, StationName)).
     
 
 
