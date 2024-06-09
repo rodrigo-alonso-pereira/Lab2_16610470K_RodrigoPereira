@@ -569,28 +569,33 @@ driver(Id, Name, TrainMaker, [Id, Name, TrainMaker]).
 driver_get_id(Driver, Id) :-
     driver(Id, _, _, Driver).
 
+% Obtiene TrainMaker de driver
+driver_get_train_maker(Driver, TrainMaker) :-
+    driver(_, _, TrainMaker, Driver).
+
 %-----------------------------------------------------------------------------------------------
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subway.
 
 % Constructor de DriverData
-driver_data(IdDriver, IdTrain, DepartureTime, DepartureStation, [IdDriver, IdTrain, DepartureTime, DepartureStation]).
+driver_data(IdDriver, DepartureTime, DepartureStation, ArrivalStation, [IdDriver, DepartureTime, DepartureStation, ArrivalStation]).
 
 % Obtiene IdDriver de driver_data
 driver_data_get_id_driver(DriverData, IdDriver) :-
-    driver_data(IdDriver, _, _, _, DriverData).
+    driver_data(IdDriver, _, _, _, _, DriverData). 
 
-% Obtiene IdDriver de driver_data
-driver_data_get_id_train(DriverData, IdTrain) :-
-    driver_data(_, IdTrain, _, _, DriverData).
-
-% Obtiene IdDriver de driver_data
+% Obtiene DepartureTime de driver_data
 driver_data_get_departure_time(DriverData, DepartureTime) :-
-    driver_data(_, _, DepartureTime, _, DriverData).
+    driver_data(_, _, DepartureTime, _, _, DriverData).
 
-% Obtiene IdDriver de driver_data
+% Obtiene DepartureStation de driver_data
 driver_data_get_departure_station(DriverData, DepartureStation) :-
-    driver_data(_, _, _, DepartureStation, DriverData).
+    driver_data(_, _, _, DepartureStation, _, DriverData).
+
+% Obtiene ArrivalStation de driver_data
+driver_data_get_arrival_station(DriverData, ArrivalStation) :-
+    driver_data(_, _, _, _, ArrivalStation, DriverData).
+
 
 % Constructor de Assign
 assign(IdLine, IdTrain, DriverData, [IdLine, IdTrain, DriverData]).
@@ -606,6 +611,7 @@ assign_get_id_train(Assign, IdTrain) :-
 % Obtiene DriverData de assign
 assign_get_driver_data(Assign, DriverData) :-
     assign(_, _, DriverData, Assign).
+
 
 % Constructor de subway
 subway(Id, Name, Lines, Trains, Drivers, Assign, [Id, Name, Lines, Trains, Drivers, Assign]).
@@ -625,7 +631,6 @@ subway_get_drivers(Subway, Drivers) :-
 % Obtiene Assign de subway
 subway_get_assign(Subway, Assign) :-
     subway(_, _, _, _, _, Assign, Subway).
-
 
 /*
 Req 16: TDA subway - Constructor.
@@ -885,7 +890,7 @@ subwaySetStationStoptime(Subway, StationName, Time, NewSubway) :-
   
 %-----------------------------------------------------------------------------------------------
 
-% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayToString.   
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAssignTrainToLine.   
 
 % Evalua si lista con TDA's tiene un elemento en particular
 exist_element(List, Element, Predicate) :-
@@ -923,6 +928,72 @@ subwayAssignTrainToLine(Subway, TrainId, LineId, NewSubway) :-
     exist_element(Trains, TrainId, train_get_id),
     exist_element(Lines, LineId, line_get_id),
     subway(Id, Name, Lines, Trains, Drivers, NewAssigns, NewSubway), !.
-    
-    
-    
+  
+%-----------------------------------------------------------------------------------------------
+
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAssignDriverToTrain.       
+
+% Corroborar que driver pueda conducir el tren
+can_drive(Driver, Train) :-
+    driver_get_train_maker(Driver, TrainMaker),
+    train_get_maker(Train, Maker),
+    TrainMaker == Maker.  
+
+% Asigna DriverData al Assign que contenga el TrainId
+assign_add_driverData(Assign, DriverData, TrainId, NewAssign) :-
+    assign_get_id_line(Assign, IdLine),
+	assign_get_id_train(Assign, ActualIdTrain),
+	assign_get_driver_data(Assign, OldDriverData),
+    (ActualIdTrain == TrainId ->  
+    	assign(IdLine, ActualIdTrain, DriverData, NewAssign)
+    ;   
+    	assign(IdLine, ActualIdTrain, OldDriverData, NewAssign)).
+
+% Recorre lista de assigns y crea nueva lista con assigns
+assign_find_train([], _, _, []). 
+
+assign_find_train([First|Tail], TrainId, DriverData, NewAssigns) :-
+    assign_add_driverData(First, DriverData, TrainId, NewAssign),
+    assign_find_train(Tail, TrainId, DriverData, Acc),
+    append([NewAssign], Acc, NewAssigns). 
+    	   
+/*
+Req 23: TDA subway - Modificador.
+ 
+- Descripcion = Predicado que permite asignar un conductor a un tren en un horario de 
+                salida determinado considerando estación de partida y de llegada.
+
+
+- MP: subwayAssignDriverToTrain/7.
+- MS: subway_get_id/2,
+   	  subway_get_name/2,
+      subway_get_lines/2,
+      subway_get_trains/2,
+      subway_get_drivers/2,
+      subway_get_assign/2,
+      driver_data/5,
+      exist_element/3,
+      exist_element/3,
+      assign_find_train/4,
+	  subway/7, !.
+*/  
+
+subwayAssignDriverToTrain(Subway, DriverId, TrainId, DepartureTime, DepartureStation, ArrivalStation, NewSubway) :-
+    subway_get_id(Subway, Id),
+    subway_get_name(Subway, Name),
+    subway_get_lines(Subway, Lines),
+    subway_get_trains(Subway, Trains),
+    subway_get_drivers(Subway, Drivers),
+    subway_get_assign(Subway, OldAssigns),
+    driver_data(DriverId, DepartureTime, DepartureStation, ArrivalStation, DriverData),
+    exist_element(Trains, TrainId, train_get_id),
+    exist_element(Drivers, DriverId, driver_get_id),
+    assign_find_train(OldAssigns, TrainId, DriverData, NewAssigns),
+	subway(Id, Name, Lines, Trains, Drivers, NewAssigns, NewSubway), !.
+
+
+
+
+
+
+
