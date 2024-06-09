@@ -933,11 +933,22 @@ subwayAssignTrainToLine(Subway, TrainId, LineId, NewSubway) :-
 
 % IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAssignDriverToTrain.       
 
+%TODO SI HAY TIEMPO, PROBAR
 % Corroborar que driver pueda conducir el tren
-can_drive(Driver, Train) :-
+can_drive(Train, Driver) :-
     driver_get_train_maker(Driver, TrainMaker),
     train_get_maker(Train, Maker),
     TrainMaker == Maker.  
+
+% Recorre lista de TDAs y devuelve un Element
+find_item([], _, _, _) :- fail.
+
+find_item([First|Tail], SearchedItem, Predicate, Item) :-
+    call(Predicate, First, Element),
+    (Element == SearchedItem ->  
+    	Item = First, !
+    ;   
+    	find_item(Tail, SearchedItem, Predicate, Item)).
 
 % Asigna DriverData al Assign que contenga el TrainId
 assign_add_driverData(Assign, DriverData, TrainId, NewAssign) :-
@@ -963,7 +974,6 @@ Req 23: TDA subway - Modificador.
 - Descripcion = Predicado que permite asignar un conductor a un tren en un horario de 
                 salida determinado considerando estación de partida y de llegada.
 
-
 - MP: subwayAssignDriverToTrain/7.
 - MS: subway_get_id/2,
    	  subway_get_name/2,
@@ -988,10 +998,27 @@ subwayAssignDriverToTrain(Subway, DriverId, TrainId, DepartureTime, DepartureSta
     driver_data(DriverId, DepartureTime, DepartureStation, ArrivalStation, DriverData),
     exist_element(Trains, TrainId, train_get_id),
     exist_element(Drivers, DriverId, driver_get_id),
+    find_item(Trains, TrainId, train_get_id, Train),
+    find_item(Drivers, DriverId, driver_get_id, Driver),
+    can_drive(Train, Driver),
     assign_find_train(OldAssigns, TrainId, DriverData, NewAssigns),
 	subway(Id, Name, Lines, Trains, Drivers, NewAssigns, NewSubway), !.
+  
+%-----------------------------------------------------------------------------------------------
 
+% IMPLEMENTACIONES PARA FUNCIONAMIENTO PREDICADO subwayAssignDriverToTrain.       
 
+/*
+Req 24: TDA subway - Otros predicados.
+ 
+- Descripcion = Predicado que permite determinar dónde está un tren a partir de una hora indicada del día.
+
+- MP: subwayAssignDriverToTrain/7.
+- MS: 
+*/  
+
+%whereIsTrain(Subway, TrainId, TimeStart, Station) :-
+    
 
 
 
