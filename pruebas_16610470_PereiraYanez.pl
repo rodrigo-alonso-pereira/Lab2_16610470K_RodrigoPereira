@@ -1,11 +1,17 @@
 /*
-Script de Pruebas N°1
+Script de Pruebas N°1 (Profesor)
 Script actualizado al 11/04/2024 - 01:28 AM
 
-station(1, "Los Heroes", t, 50, E1),
-station(2, "La moneda", r, 30, E2),
-station(3, "Universidad de Chile", t, 30, E3),
-line(1, "L1", “UIC 60 ASCE”, [], L1),
+% creando type's
+type("Regular", R),
+type("Mantencion", M),
+type("Combinacion", C),
+type("Terminal", T),
+
+station(1, "Los Heroes", T, 50, E1),
+station(2, "La moneda", R, 30, E2),
+station(3, "Universidad de Chile", T, 30, E3),
+line(1, "L1", "UIC 60 ASCE", [], L1),
 section(E1, E2, 500, 100, S0),
 section(E2, E3, 550, 100, S1),
 lineAddSection(L1, S0, L1_1),
@@ -13,7 +19,7 @@ lineAddSection(L1_1, S1, L1_2),
 subway(1, "Metro Santiago", Sub0),
 isLine(L1_2),
 % isLine(L1_1), % False porque falta estación terminal
-% subwayAddLine(Sub0, [L1_1], Sub2). % False porque la línea es inconsistente
+%subwayAddLine(Sub0, [L1_1], Sub2). % False porque la línea es inconsistente
 subwayAddLine(Sub0, [L1_2], Sub2).
 
 */
@@ -21,6 +27,8 @@ subwayAddLine(Sub0, [L1_2], Sub2).
 %--------------------------------------------------------------------------------
 
 /*
+Script de Pruebas N°2 (Rodrigo Pereira)
+Script actualizado al 09/06/2024
 
 % creando type's
 type("Regular", R),
@@ -152,6 +160,8 @@ driver(5, "Monkey D. Luffy", "ALSTOM", D5),
 
 % crando subway
 subway(0, "Metro Santiago", SW0),
+subway(1, "Metro Valparaiso", SW20),
+subway(2, "Metro Concepcion", SW30),
 
 % agregando train a subway
 subwayAddTrain(SW0, [T1], SW1), % True
@@ -210,7 +220,8 @@ whereIsTrain(SW12_1, 2, "21:08:00", IamHere4), %Pedro Aguirre Cerda
 subwayTrainPath(SW11_1, 1, "10:45:00", LS1), %["República", "Los Héroes", "La Moneda", "U. de Chile", "Santa Lucia"]
 %subwayTrainPath(SW11_1, 1, "11:00:00", LS2), %False pq ya llego al final y no quedan estaciones por recorrer
 subwayTrainPath(SW12_1, 1, "16:05:00", LS3), %["Lo Ovalle", "Ciudad del Niño"]
-subwayTrainPath(SW12_1, 2, "21:08:00", LS4). %["Pedro Aguirre Cerda", "Franklin"]
+%["Pedro Aguirre Cerda", "Franklin"]
+subwayTrainPath(SW12_1, 2, "21:08:00", LS4). 
 
 */ 
 
