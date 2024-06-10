@@ -393,7 +393,7 @@ pcar_get_type(Pcar, Type) :-
 
 %-----------------------------------------------------------------------------------------------
 
- * /*
+/*
 Req 10: TDA train - Constructor.
  
 - Descripcion = Predicado que permite crear un tren o convoy.
